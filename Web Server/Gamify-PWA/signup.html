@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign Up - Gamify</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="css/login.css">
+  </head>
+  <body>
+    <!-- floating logo (same behaviour as login) -->
+    <div class="logo-wrap" aria-hidden="true">
+      <img id="logo" src="images/GAMIFY LOGO.png" alt="Logo" />
+    </div>
+
+    <main class="login-box" role="main" aria-labelledby="signupTitle">
+      <h1 id="signupTitle">Create an account</h1>
+
+      <form id="signupForm" autocomplete="on" novalidate>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required minlength="3" placeholder="yourname" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required placeholder="name@example.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required minlength="6" placeholder="••••••••" />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm password</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" required minlength="6" placeholder="••••••••" />
+        </div>
+
+        <div class="actions">
+          <button type="submit">Create account</button>
+        </div>
+
+        <p class="muted">Already have an account? <a class="small-link" href="login.html">Sign in</a></p>
+      </form>
+    </main>
+
+    <script>
+      // show logo
+      const wrap = document.querySelector('.logo-wrap');
+      requestAnimationFrame(()=> setTimeout(()=> wrap.classList.add('visible'), 180) );
+
+      // same parallax behavior as login
+      (function(){
+        const logo = document.getElementById('logo');
+        if (!logo) return;
+        const maxPixels = 5;
+        let raf = null;
+        function onMove(clientX, clientY){
+          const cx = window.innerWidth / 2;
+          const cy = window.innerHeight / 2;
+          const nx = (clientX - cx) / cx;
+          const ny = (clientY - cy) / cy;
+          const tx = nx * maxPixels;
+          const ty = ny * maxPixels;
+          logo.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+        }
+        function handlePointer(e){
+          const x = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+          const y = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(()=> onMove(x,y));
+        }
+        function reset(){ if (raf) cancelAnimationFrame(raf); logo.style.transform = 'translate3d(0,0,0)'; }
+        window.addEventListener('mousemove', handlePointer, {passive:true});
+        window.addEventListener('pointermove', handlePointer, {passive:true});
+        window.addEventListener('touchmove', handlePointer, {passive:true});
+        window.addEventListener('mouseleave', reset);
+        window.addEventListener('pointerleave', reset);
+        window.addEventListener('blur', reset);
+      })();
+
+      // client-side validation: check validity and password match
+      document.getElementById('signupForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        const f = e.target;
+        if (!f.checkValidity()) { f.reportValidity(); return; }
+        const pw = document.getElementById('password').value;
+        const cpw = document.getElementById('confirmPassword').value;
+        if (pw !== cpw) {
+          alert('Passwords do not match.');
+          return;
+        }
+        // TODO: send POST to your server API (example below)
+        // fetch('/api/signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: f.username.value, email: f.email.value, password: pw }) })
+        //   .then(r => r.json()).then(console.log).catch(console.error);
+        alert('Ready to submit — implement server signup API and replace this alert.');
+      });
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(()=>{});
+      }
+    </script>
+  </body>
+</html>
