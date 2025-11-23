@@ -41,6 +41,15 @@
         color:var(--accent);
         border:1px solid rgba(12,248,8,0.12);
       }
+      /* profile button style */
+      .btn-profile{
+        background:transparent;
+        color:var(--muted);
+        border:1px solid rgba(12,248,8,0.12);
+        padding:8px 12px;
+        border-radius:10px;
+        font-weight:700;
+      }
       .btn:hover{ transform:translateY(-2px); }
       /* page content */
       .center { display:flex; flex-direction:column; align-items:center; gap:16px; min-height:calc(100vh - 72px); justify-content:center; padding:24px; }
@@ -58,16 +67,17 @@
   </head>
   <body>
     <header class="topbar" role="banner">
-      <div class="brand"><img src = "images\GAMIFY LOGO.png" ></div>
+      <div class="brand"><img src="images\GAMIFY LOGO.png" alt="Gamify logo"></div>
       <nav class="nav" role="navigation" aria-label="Auth pages">
         <a class="btn btn-ghost" href="login.html" aria-label="Sign in">Sign In</a>
         <a class="btn btn-primary" href="signup.html" aria-label="Create account">Sign Up</a>
+        <a class="btn btn-profile" href="profile.html" aria-label="User profile">Profile</a>
       </nav>
     </header>
 
     <main class="center" role="main">
       <h1>MoviePWA 67</h1>
-      <p style="color:rgba(255,255,255,0.72);max-width:620px;text-align:center">Open the Sign In or Sign Up links in the top bar to test the auth screens.</p>
+      <p style="color:rgba(255,255,255,0.72);max-width:620px;text-align:center">Open the Sign In, Sign Up or Profile links in the top bar to test the screens.</p>
     </main>
 
     <script>
