@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Login - MoviePWA</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="css/login.css">
+  </head>
+  <body>
+    <!-- floating logo: replace src with your logo file -->
+    <div class="logo-wrap" aria-hidden="true">
+      <img id="logo" src="images/GAMIFY LOGO.png" alt="Logo" />
+    </div>
+
+    <main class="login-box" role="main" aria-labelledby="loginTitle">
+      <h1 id="loginTitle">Sign In to Gamify</h1>
+
+      <form id="loginForm" autocomplete="on" novalidate>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" required minlength="3" placeholder="yourname" />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required placeholder="name@example.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" name="password" type="password" required minlength="6" placeholder="••••••••" />
+        </div>
+
+        <div class="actions">
+          <button type="submit">Sign in</button>
+        </div>
+
+        <p class="muted">Don't have an account? <a class="small-link" href="index.html">Back to home</a></p>
+      </form>
+    </main>
+
+    <script>
+      // entrance: show logo after a short delay
+      const wrap = document.querySelector('.logo-wrap');
+      requestAnimationFrame(()=> setTimeout(()=> wrap.classList.add('visible'), 180) );
+
+      // simple, lightweight parallax that moves the logo slightly toward the pointer
+      (function(){
+        const logo = document.getElementById('logo');
+        if (!logo) return;
+        const maxPixels = 5; // larger logo -> bigger parallax
+        let raf = null;
+
+        function onMove(clientX, clientY){
+          const cx = window.innerWidth / 2;
+          const cy = window.innerHeight / 2;
+          const nx = (clientX - cx) / cx; // -1 ... 1
+          const ny = (clientY - cy) / cy;
+          const tx = nx * maxPixels;
+          const ty = ny * maxPixels;
+          logo.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+        }
+
+        // pointer move handler throttled with rAF
+        function handlePointer(e){
+          const x = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+          const y = (e.touches && e.touches[0]) ? e.touches[0].clientY : e.clientY;
+          if (raf) cancelAnimationFrame(raf);
+          raf = requestAnimationFrame(()=> onMove(x,y));
+        }
+
+        function reset(){
+          if (raf) cancelAnimationFrame(raf);
+          logo.style.transform = 'translate3d(0,0,0)';
+        }
+
+        window.addEventListener('mousemove', handlePointer, {passive:true});
+        window.addEventListener('pointermove', handlePointer, {passive:true});
+        window.addEventListener('touchmove', handlePointer, {passive:true});
+        window.addEventListener('mouseleave', reset);
+        window.addEventListener('pointerleave', reset);
+        window.addEventListener('blur', reset);
+      })();
+
+      // minimal demo: prevent real submit and show simple validation
+      document.getElementById('loginForm').addEventListener('submit', function(e){
+        e.preventDefault();
+        const f = e.target;
+        if (!f.checkValidity()) {
+          f.reportValidity();
+          return;
+        }
+        // Placeholder: replace with real auth flow
+        alert('Form valid — implement authentication flow here.');
+      });
+
+      // register service worker (optional)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(()=>{});
+      }
+    </script>
+  </body>
+</html>
