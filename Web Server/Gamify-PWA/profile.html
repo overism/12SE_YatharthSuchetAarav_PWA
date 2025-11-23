@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Profile - Gamify</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="stylesheet" href="profilestyle.css"></link>
+    
+  </head>
+  <style>
+/* keep CSS in this file — changed to make background fixed and prevent horizontal scroll */
+:root{
+  --topbar-h:72px;
+  --bg:#0b0b0c;
+  --panel:#141416;
+  --accent:#0cf808;
+  --muted:rgba(255,255,255,0.72);
+  --soft:rgba(255,255,255,0.04);
+}
+
+/* prevent horizontal scrolling and ensure consistent box sizing */
+*{ box-sizing: border-box; }
+html,body{
+  height:100%;
+  margin:0;
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  color:#fff;
+  overflow-x:hidden; /* prevent side-to-side scrolling */
+}
+
+/* fixed background that continues while scrolling, using bg3.jpg */
+body{
+  /* two-layer background: image + dark overlay gradient */
+  background-image:
+    linear-gradient(180deg, rgba(6,16,10,0.7) 0%, rgba(7,16,20,0.75) 50%, rgba(7,16,20,0.85) 100%),
+    url("images/bg3.jpg");
+  background-position: center center, center center;
+  background-size: cover, cover;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed; /* keep background fixed during scroll */
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* fixed header */
+.topbar{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  height:var(--topbar-h);
+  background:var(--panel);
+  color:var(--muted);
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 6px 24px rgba(0,0,0,0.6);
+  z-index:100;
+}
+.brand{font-weight:800; letter-spacing:.6px;}
+.nav{display:flex; gap:10px; align-items:center;}
+.btn { display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; border:none; font-weight:700; cursor:pointer; text-decoration:none;}
+.btn-ghost{ background:transparent; color:var(--accent); border:1px solid rgba(12,248,8,0.10); }
+.btn-primary{ background:var(--accent); color:#07121a; }
+
+/* layout wrapper (content centered under fixed header) */
+.wrap{
+  max-width:1200px;
+  margin:0 auto;
+  padding:24px;
+  position:relative;
+  min-height: calc(100vh - var(--topbar-h));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow-x:hidden; /* extra safety */
+}
+
+/* ambient green glow behind main card */
+.glow {
+  position:absolute;
+  left:50%;
+  top:20%;
+  transform:translateX(-50%);
+  width:620px;
+  height:420px;
+  background: radial-gradient(closest-side, rgba(12,248,8,0.12), rgba(12,248,8,0.03) 40%, transparent 70%);
+  filter: blur(36px);
+  pointer-events:none;
+}
+
+/* main card lowered by 200px from top of wrap */
+.card {
+  width:100%;
+  max-width:980px;
+  background: linear-gradient(180deg,var(--panel), rgba(20,20,22,0.9));
+  border-radius:18px;
+  padding:48px 40px 36px 40px;
+  display:grid;
+  grid-template-columns: 1fr 360px;
+  gap:28px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  position:relative;
+  overflow:visible;
+  z-index:10;
+  margin-top:200px; /* lowered by 200px */
+}
+
+/* avatar overlapping the card */
+.avatar-wrap{
+  position:absolute;
+  left:40px;
+  top:-80px;
+  width:160px;
+  height:160px;
+  border-radius:50%;
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+  border:4px solid rgba(255,255,255,0.03);
+}
+.avatar-wrap img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+.hero { padding-top:36px; }
+.hero-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.username{ margin-left:200px; }
+.username h1{ margin:0; font-size:22px; letter-spacing:0.2px; }
+.username p{ margin:4px 0 0 0; color:var(--muted); font-size:13px }
+
+.details{ margin-top:18px; color:var(--muted); display:flex; flex-direction:column; gap:12px; }
+.details .line{ background:var(--soft); padding:14px 16px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; }
+.details .label{ font-size:13px; color:rgba(255,255,255,0.85); }
+.details .value{ font-weight:700; color:var(--muted); }
+
+/* bio editor */
+.bio-editor{ width:100%; min-height:92px; resize:vertical; padding:12px 14px; border-radius:10px; background:rgba(255,255,255,0.02); color:var(--muted); border:1px solid rgba(255,255,255,0.02); font-size:14px; outline:none; }
+
+.panel{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:18px; border-radius:12px; height:100%; display:flex; flex-direction:column; gap:12px; }
+.panel h3{ margin:0 0 6px 0; font-size:16px; }
+.perm{ display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:10px; background:rgba(255,255,255,0.01); }
+.perm small{ color:var(--muted); }
+
+.menu-icon{ width:44px; height:44px; border-radius:10px; background:rgba(255,255,255,0.02); display:flex; align-items:center; justify-content:center; color:var(--muted); cursor:pointer; }
+
+.actions{ display:flex; gap:12px; margin-top:18px; }
+.muted-note{ color:rgba(255,255,255,0.6); font-size:13px; margin-top:8px; }
+
+@media (max-width:980px){
+  .card{ grid-template-columns: 1fr; padding-top:84px; }
+  .avatar-wrap{ left:50%; transform:translateX(-50%); top:-96px; width:140px; height:140px; }
+  .username{ margin-left:0; text-align:center; }
+}
+    </style>
+  <body>
+    <header class="topbar" role="banner">
+      <div class="brand">Gamify</div>
+      <nav class="nav" role="navigation" aria-label="Auth pages">
+        <a class="btn btn-ghost" href="login.html">Sign In</a>
+        <a class="btn btn-ghost" href="signup.html">Sign Up</a>
+        <a class="btn btn-primary" href="index.html">Home</a>
+      </nav>
+    </header>
+
+    <main class="wrap" role="main" aria-labelledby="profileTitle">
+      <div class="glow" aria-hidden="true"></div>
+
+      <section class="card" id="profileCard" aria-labelledby="profileTitle">
+        <div class="avatar-wrap" aria-hidden="true">
+          <img id="profileAvatar" src="images/GAMIFY LOGO.png" alt="Avatar">
+        </div>
+
+        <div class="hero" id="profileContent">
+          <div class="hero-row">
+            <div class="username" aria-live="polite">
+              <h1 id="displayName">Username</h1>
+              <p id="displayEmail">user@example.com</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div class="menu-icon" id="menuBtn" title="Menu" role="button" aria-label="Menu">
+                <svg width="18" height="12" viewBox="0 0 18 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect y="0" width="18" height="2" rx="1" fill="white" opacity="0.9"/>
+                  <rect y="5" width="18" height="2" rx="1" fill="white" opacity="0.6"/>
+                  <rect y="10" width="18" height="2" rx="1" fill="white" opacity="0.4"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="details" role="region" aria-label="Account details">
+            <div class="line"><div class="label">Member since</div><div class="value" id="joinedDate">—</div></div>
+            <div class="line"><div class="label">Membership</div><div class="value" id="membership">Free</div></div>
+            <div class="line"><div class="label">Email verified</div><div class="value" id="verified">No</div></div>
+
+            <!-- BIO row now editable -->
+            <div class="line" style="flex-direction:column;align-items:flex-start;gap:8px;">
+              <div class="label">Bio</div>
+              <textarea id="bioEditor" class="bio-editor" placeholder="Write a short bio..."></textarea>
+              <div style="display:flex;gap:8px;margin-top:6px;">
+                <button id="saveBio" class="btn btn-primary">Save bio</button>
+                <button id="resetBio" class="btn btn-ghost">Reset</button>
+                <div id="bioStatus" style="margin-left:8px;color:var(--muted);align-self:center;font-size:13px"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <a id="editBtn" class="btn btn-ghost" href="#" role="button">Edit profile</a>
+            <button id="logoutBtn" class="btn btn-primary">Sign out</button>
+          </div>
+
+        </div>
+
+        <aside class="panel" aria-labelledby="settingsTitle">
+          <h3 id="settingsTitle">Settings & permissions</h3>
+
+          <div class="perm"><div>Push notifications</div><div><small id="permPush">Enabled</small></div></div>
+          <div class="perm"><div>Share analytics</div><div><small id="permAnalytics">Disabled</small></div></div>
+          <div class="perm"><div>Admin access</div><div><small id="permAdmin">No</small></div></div>
+
+          <div style="flex:1"></div>
+
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button id="changePw" class="btn btn-ghost">Change password</button>
+            <button id="deleteAcct" class="btn btn-ghost" style="border-color:rgba(255,80,80,0.12); color:rgba(255,80,80,0.9)">Delete account</button>
+          </div>
+        </aside>
+      </section>
+    </main>
+
+    <script>
+      // load demo data (fallback)
+      const mock = JSON.parse(localStorage.getItem('gamify_user') || '{}');
+      document.getElementById('displayName').textContent = mock.username || 'Gamer';
+      document.getElementById('displayEmail').textContent = mock.email || 'gamer@example.com';
+      document.getElementById('joinedDate').textContent = mock.joined || '2025-01-01';
+      document.getElementById('membership').textContent = mock.membership || 'Free';
+      document.getElementById('verified').textContent = mock.verified ? 'Yes' : 'No';
+
+      const bioEditor = document.getElementById('bioEditor');
+      const bioStatus = document.getElementById('bioStatus');
+
+      // try to fetch bio from service worker cache (/user/bio). fallback to localStorage/mock.
+      async function loadBio() {
+        try {
+          const res = await fetch('/user/bio', { cache: 'no-store' });
+          if (res && res.ok) {
+            const json = await res.json();
+            bioEditor.value = json.bio || (mock.bio || '');
+            return;
+          }
+        } catch (err) {
+          // ignored: fallback below
+        }
+        bioEditor.value = mock.bio || '';
+      }
+
+      // save bio: update localStorage and POST to /save-bio (service worker will intercept and cache)
+      async function saveBio() {
+        const bio = bioEditor.value || '';
+        bioStatus.textContent = 'Saving...';
+        // update local preview/storage immediately
+        const user = Object.assign({}, mock, { bio });
+        localStorage.setItem('gamify_user', JSON.stringify(user));
+        // send to sw / server
+        try {
+          const res = await fetch('/save-bio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ bio })
+          });
+          if (res && res.ok) {
+            bioStatus.textContent = 'Saved';
+            setTimeout(()=> bioStatus.textContent = '', 2000);
+            return;
+          }
+        } catch (err) {
+          // network or no SW
+        }
+        bioStatus.textContent = 'Saved locally';
+        setTimeout(()=> bioStatus.textContent = '', 2000);
+      }
+
+      document.getElementById('saveBio').addEventListener('click', (e) => {
+        e.preventDefault();
+        saveBio();
+      });
+
+      document.getElementById('resetBio').addEventListener('click', (e) => {
+        e.preventDefault();
+        bioEditor.value = mock.bio || '';
+        bioStatus.textContent = 'Reset';
+        setTimeout(()=> bioStatus.textContent = '', 1400);
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('gamify_user');
+        location.href = 'index.html';
+      });
+
+      document.getElementById('editBtn').addEventListener('click', (e) => { e.preventDefault(); alert('Open edit profile UI (implement).'); });
+      document.getElementById('menuBtn').addEventListener('click', () => alert('Open navigation / account menu (implement).'));
+      document.getElementById('deleteAcct').addEventListener('click', () => {
+        if (!confirm('Delete account? This is a demo action.')) return;
+        alert('Call server API to delete account (implement).');
+      });
+
+      // initial load
+      loadBio();
+
+      // ensure SW ready (it will handle /save-bio and /user/bio)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(()=>{});
+      }
+    </script>
+  </body>
+</html>
