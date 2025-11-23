@@ -1,0 +1,152 @@
+/* Reset & base */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html,body { height: 100%; font-family: 'Roboto', sans-serif; color: #fff; background: #fff; }
+a { color: inherit; text-decoration: none; }
+
+/* Header */
+.site-header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: linear-gradient(180deg, #2f4f4f, #274343);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 20px;
+    z-index: 200;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+}
+
+/* search added to header */
+.header-search{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-left: 12px;
+
+    /* make the search form take ~50% of the header space and be flexible */
+    flex: 1 1 50%;
+    max-width: 50%;
+    min-width: 0; /* allow it to shrink on small headers */
+}
+.header-search input[type="search"]{
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+
+    /* fill the .header-search container */
+    width: 100%;
+    min-width: 0; /* needed so flex children can shrink properly */
+    outline: none;
+}
+.header-search input::placeholder{ color: rgba(255,255,255,0.6); }
+.header-search button{
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+    background: #1f8f7a;
+    color: #fff;
+    font-weight:600;
+    cursor: pointer;
+}
+.header-search button:hover{ filter: brightness(.95); }
+
+/* existing logo/nav styles */
+#LogoDiv{
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.15);
+    border-radius: 8px;
+    overflow: hidden;
+}
+#LogoDiv img{ max-width: 100%; max-height: 100%; display: block; object-fit: contain; }
+
+.brand-name{ font-weight:700; letter-spacing: 1px; color: #fff; font-size: 18px; display: inline-block; }
+
+/* Navigation */
+.main-nav{
+    display:flex;
+    gap: 12px;
+    margin-left: 8px;
+}
+
+.nav-link{
+    padding: 10px 14px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    font-weight: 500;
+}
+.nav-link:hover{ background: rgba(255,255,255,0.9); color: #111; }
+
+/* Main content - leave space for fixed header */
+.site-main{ padding: 92px 24px 40px; max-width: 1400px; margin: 0 auto; }
+
+/* Category */
+.category{ margin-bottom: 36px; }
+.category-title{
+    font-family: 'Sometype Mono', monospace;
+    color: #111;
+    margin-bottom: 12px;
+    font-size: 20px;
+}
+
+/* Horizontal carousel */
+.carousel{
+    display:flex;
+    gap: 14px;
+    overflow-x:auto;
+    padding-bottom: 6px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+.carousel::-webkit-scrollbar{ height: 10px; }
+.carousel::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.2); border-radius: 10px; }
+
+/* Game card */
+.game-card{
+    min-width: 260px;
+    max-width: 260px;
+    background: #0b0b0b;
+    color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+    scroll-snap-align: start;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+.game-card img{ width: 100%; height: 150px; object-fit: cover; display:block; }
+.game-card h3{ padding: 12px; font-size: 16px; color: #fff; }
+
+/* Hover */
+.game-card:hover{ transform: translateY(-8px); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
+
+/* Footer */
+.site-footer{ padding: 24px; text-align:center; color:#666; font-size:13px; }
+
+/* Responsive */
+@media (max-width:900px){
+    .main-nav{ display:none; }
+    .header-search{ display:none; } /* hide header search on narrow screens */
+    .game-card{ min-width: 200px; max-width: 200px; }
+    #LogoDiv{ width:48px; height:48px; }
+    .brand-name{ display:none; }
+}
+@media (max-width:480px){
+    .site-main{ padding: 92px 12px 40px; }
+    .game-card{ min-width: 160px; max-width: 160px; }
+}
