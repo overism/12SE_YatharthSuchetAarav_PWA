@@ -6,28 +6,27 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Sometype+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="header.css">
-    <title>Gamify — Games Catalogue</title>
-    <link rel="icon" href="image.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}">
+    <title>Gamify — UI Tester</title>
 </head>
 <body>
-    <header class="site-header">
-        <a class="brand" href="index.html">
-            <div id="LogoDiv"><img src="image.png" alt="Gamify Logo"></div>
-            <span class="brand-name">Gamify</span>
-        </a>
+  <header class="site-header">
+    <a class="brand" href="{{ url_for('index.html') }}">
+        <div id="LogoDiv"><img src="{{ url_for('static', filename='images/GAMIFY LOGO.png') }}" alt="Gamify Logo"></div>
+         <span class="brand-name">Gamify</span>
+     </a>
 
-        <form class="header-search" role="search" action="#" method="get">
-            <input type="search" name="q" placeholder="Search games, genres, developers..." aria-label="Search games">
-            <button type="submit">Search</button>
-        </form>
+    <form class="header-search" role="search" action="#" method="get">
+      <input type="search" name="q" placeholder="Search games, genres, developers..." aria-label="Search games">
+      <button type="submit">Search</button>
+    </form>
 
-        <nav class="main-nav">
-            <a class="nav-link" href="index.html">Home</a>
-            <a class="nav-link" href="#">Browse</a>
-            <a class="nav-link" href="#">My List</a>
-        </nav>
-    </header>
+    <nav class="main-nav">
+      <a class="nav-link" href="{{ url_for('index.html') }}">Home</a>
+      <a class="nav-link" href="{{ url_for('login.html') }}">Sign In</a>
+      <a class="nav-link" href="{{ url_for('profile.html') }}">Profile</a>
+    </nav>
+  </header>
     
     <main class="site-main">
         <!-- Categories (Netflix-like horizontal carousels) -->

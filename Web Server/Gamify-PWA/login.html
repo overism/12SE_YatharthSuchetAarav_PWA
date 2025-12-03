@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Login - MoviePWA</title>
-    <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="static/css/login.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Login - Gamify</title>
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
   </head>
   <body>
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('index') }}">
+        <img src="{{ url_for('static', filename='images/GAMIFY LOGO.png') }}" alt="Gamify logo" style="height:36px;">
+        <span style="margin-left:8px;color:#fff;">Gamify</span>
+      </a>
+    </header>
+
     <!-- floating logo: replace src with your logo file -->
     <div class="logo-wrap" aria-hidden="true">
       <img id="logo" src="static/images/GAMIFY_LOGO.png" alt="Logo" />
@@ -36,7 +43,7 @@
           <button type="submit">Sign in</button>
         </div>
 
-        <p class="muted">Don't have an account? <a class="small-link" href="index.html">Back to home</a></p>
+        <p class="muted">Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
       </form>
     </main>
 

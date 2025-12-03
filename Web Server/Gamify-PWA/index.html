@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en-US" dir="ltr">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="manifest" href="manifest.json" />
-    <title>MoviePWA</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gamify — Games Catalogue</title>
+    <link rel="manifest" href="{{ url_for('manifest') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}" />
+    <link rel="icon" href="{{ url_for('static', filename='images/GAMIFY LOGO.png') }}">
     <style>
       :root{ --bg:#0f0f11; --bar:#1f1f23; --accent:#0cf808; --muted:#cfeed1; }
       html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:var(--bg); color:#fff;}
@@ -67,11 +69,11 @@
   </head>
   <body>
     <header class="topbar" role="banner">
-      <div class="brand"><img src="static/images/GAMIFY_LOGO.png" alt="Gamify logo"></div>
+      <div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo"></div>
       <nav class="nav" role="navigation" aria-label="Auth pages">
-        <a class="btn btn-ghost" href="login.html" aria-label="Sign in">Sign In</a>
-        <a class="btn btn-primary" href="signup.html" aria-label="Create account">Sign Up</a>
-        <a class="btn btn-profile" href="profile.html" aria-label="User profile">Profile</a>
+        <a class="btn btn-ghost" href="{{ url_for('login') }}" aria-label="Sign in">Sign In</a>
+        <a class="btn btn-primary" href="{{ url_for('signup') }}" aria-label="Create account">Sign Up</a>
+        <a class="btn btn-profile" href="{{ url_for('profile') }}" aria-label="User profile">Profile</a>
       </nav>
     </header>
 
