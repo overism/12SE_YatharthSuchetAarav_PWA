@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-US" dir="ltr">
   <head>
-<<<<<<< HEAD:Web Server/Gamify-PWA/index.html
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="manifest.json" />
     <title>MoviePWA</title>
     <style>
       :root{ --bg:#0f0f11; --bar:#1f1f23; --accent:#0cf808; --muted:#cfeed1; }
@@ -68,7 +67,7 @@
   </head>
   <body>
     <header class="topbar" role="banner">
-      <div class="brand"><img src="images\GAMIFY LOGO.png" alt="Gamify logo"></div>
+      <div class="brand"><img src="static/images/GAMIFY_LOGO.png" alt="Gamify logo"></div>
       <nav class="nav" role="navigation" aria-label="Auth pages">
         <a class="btn btn-ghost" href="login.html" aria-label="Sign in">Sign In</a>
         <a class="btn btn-primary" href="signup.html" aria-label="Create account">Sign Up</a>
@@ -81,16 +80,6 @@
       <p style="color:rgba(255,255,255,0.72);max-width:620px;text-align:center">Open the Sign In, Sign Up or Profile links in the top bar to test the screens.</p>
     </main>
 
-=======
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link rel="manifest" href="/manifest.json">
-    <title>Games PWA</title>
-  </head>
-  <body>
-    <h1>Games PWA</h1>
-    <a href="Web Server\Gamify-PWA\testing\uitester.html"><button>UI TESTING</button></a>
->>>>>>> 607c36e63f7fe465ca8628fb4429d634c4c5eb61:index.html
     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(()=>{});

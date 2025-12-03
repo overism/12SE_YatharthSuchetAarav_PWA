@@ -17,8 +17,7 @@ html,body{
 
 /* page background: gradient overlay + your image */
 body{
-  background-image: url("Web Server\Gamify-PWA\images\bg3.jpg");
-
+  background-image: url("/static/images/bg3.jpg");
 }
 
 /* fixed header */

@@ -8,7 +8,7 @@ html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Robo
 body{
   background:
     linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
-    url("../images/signupbg.jpg") center/cover no-repeat;
+    url("/static/images/signupbg.jpg") center/cover no-repeat;
   display:flex;
   align-items:center;
   justify-content:center; /* centered by default for small screens */
@@ -109,7 +109,7 @@ button[type="submit"]{
   align-items:center;
   justify-content:center;
   padding:36px;
-  background:linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("../images/signupbg.jpg") center/cover no-repeat;
+  background:linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url("/static/images/signupbg.jpg") center/cover no-repeat;
   color:var(--text);
 }
 

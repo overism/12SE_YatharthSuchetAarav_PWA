@@ -1,17 +1,11 @@
 {
-    "lang": "en-us",
+    "lang": "en-US",
     "name": "Gamify PWA App",
     "short_name": "Gamify",
     "description": "A catalogue of a wide variety of games",
-    "start_url": "/",
+    "start_url": "/index.html",
     "background_color": "#2f3d58",
     "theme_color": "#2f3d58",
     "orientation": "any",
-    "display": "standalone",
-    "icons": [
-        {
-            "src": "/icon512.png",
-            "sizes": "512x512"
-        }
-    ]
+    "display": "standalone"
 }

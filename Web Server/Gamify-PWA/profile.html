@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Profile - Gamify</title>
-    <link rel="manifest" href="/manifest.json" />
-    <link rel="stylesheet" href="profilestyle.css"></link>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="static/css/profilestyle.css"></link>
     
   </head>
   <style>
@@ -34,7 +34,7 @@ body{
   /* two-layer background: image + dark overlay gradient */
   background-image:
     linear-gradient(180deg, rgba(6,16,10,0.7) 0%, rgba(7,16,20,0.75) 50%, rgba(7,16,20,0.85) 100%),
-    url("images/bg3.jpg");
+    url("static/images/bg3.jpg");
   background-position: center center, center center;
   background-size: cover, cover;
   background-repeat: no-repeat, no-repeat;
@@ -157,7 +157,7 @@ body{
     </style>
   <body>
     <header class="topbar" role="banner">
-      <div class="brand">Gamify</div>
+      <a href="index.html"><div class="brand"><img src="static/images/GAMIFY_LOGO.png" alt="Gamify logo" width="150px"></div></a>
       <nav class="nav" role="navigation" aria-label="Auth pages">
         <a class="btn btn-ghost" href="login.html">Sign In</a>
         <a class="btn btn-ghost" href="signup.html">Sign Up</a>
@@ -170,7 +170,7 @@ body{
 
       <section class="card" id="profileCard" aria-labelledby="profileTitle">
         <div class="avatar-wrap" aria-hidden="true">
-          <img id="profileAvatar" src="images/GAMIFY LOGO.png" alt="Avatar">
+          <img id="profileAvatar" src="static/images/GAMIFY_LOGO.png" alt="Avatar">
         </div>
 
         <div class="hero" id="profileContent">
