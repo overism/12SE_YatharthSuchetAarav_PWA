@@ -6,8 +6,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(
     __name__,
-    template_folder=basedir,                        # HTML files live in project root
-    static_folder=os.path.join(basedir, 'static')   # CSS/JS/images in /static
+    template_folder=basedir,
+    static_folder=os.path.join(basedir, 'static')
 )
 
 def init_db():
@@ -26,7 +26,7 @@ def init_db():
 
 init_db()
 
-# Serve manifest & service worker from project root so PWA can find them
+# Serve manifest & service worker from project root
 @app.route('/manifest.json')
 def manifest():
     return send_from_directory(basedir, 'manifest.json')
@@ -36,19 +36,23 @@ def service_worker():
     return send_from_directory(basedir, 'sw.js')
 
 # Pages
-@app.route('/index.html')
+@app.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/login.html')
+@app.route('/home')
+def home():
+    return render_template('testing/uitester.html')
+
+@app.route('/login')
 def login():
     return render_template('login.html')
 
-@app.route('/signup.html')
+@app.route('/signup')
 def signup():
     return render_template('signup.html')
 
-@app.route('/profile.html')
+@app.route('/profile')
 def profile():
     return render_template('profile.html')
 

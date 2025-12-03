@@ -71,6 +71,7 @@
     <header class="topbar" role="banner">
       <div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo"></div>
       <nav class="nav" role="navigation" aria-label="Auth pages">
+        <a class="btn btn-primary" href="{{ url_for('home') }}" aria-label="Home">Home</a>
         <a class="btn btn-ghost" href="{{ url_for('login') }}" aria-label="Sign in">Sign In</a>
         <a class="btn btn-primary" href="{{ url_for('signup') }}" aria-label="Create account">Sign Up</a>
         <a class="btn btn-profile" href="{{ url_for('profile') }}" aria-label="User profile">Profile</a>
