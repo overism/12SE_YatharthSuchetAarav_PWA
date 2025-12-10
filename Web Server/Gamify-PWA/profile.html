@@ -297,7 +297,7 @@ body{
 
       document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.removeItem('gamify_user');
-        location.href = "{{ url_for('index.html') }}";
+        location.href = "{{ url_for('index') }}";
       });
 
       document.getElementById('editBtn').addEventListener('click', (e) => { e.preventDefault(); alert('Open edit profile UI (implement).'); });
