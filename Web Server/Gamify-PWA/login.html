@@ -16,7 +16,7 @@
     <main class="login-box" role="main" aria-labelledby="loginTitle">
       <h1 id="loginTitle">Sign In to Gamify</h1>
 
-      <form id="loginForm" autocomplete="on" novalidate>
+      <form id="loginForm" autocomplete="on" action="/login_validation" method="post" novalidate>
         <div class="form-group">
           <label for="username">Username</label>
           <input id="username" name="username" type="text" required minlength="3" placeholder="yourname" />
@@ -33,7 +33,7 @@
         </div>
 
         <div class="actions">
-          <button type="submit">Sign in</button>
+          <button type="submit" value="login">Sign in</button>
         </div>
 
         <p class="muted">Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
@@ -82,18 +82,6 @@
         window.addEventListener('pointerleave', reset);
         window.addEventListener('blur', reset);
       })();
-
-      // minimal demo: prevent real submit and show simple validation
-      document.getElementById('loginForm').addEventListener('submit', function(e){
-        e.preventDefault();
-        const f = e.target;
-        if (!f.checkValidity()) {
-          f.reportValidity();
-          return;
-        }
-        // Placeholder: replace with real auth flow
-        alert('Form valid — implement authentication flow here.');
-      });
 
       // register service worker (optional)
       if ('serviceWorker' in navigator) {

@@ -22,6 +22,17 @@ CREATE TABLE reviews (
     FOREIGN KEY (gameID) REFERENCES games (gameID)
 );
 
+DROP TABLE IF EXISTS users;
+CREATE TABLE users (
+    userID INTEGER PRIMARY KEY AUTOINCREMENT,
+    userName TEXT NOT NULL UNIQUE,
+    userPassword TEXT NOT NULL,
+    userEmail TEXT NOT NULL UNIQUE,
+    userPfp BLOB,
+    userBio TEXT,
+    userSettings TEXT
+);
+
 INSERT INTO games (gameID, gameName, gameDev, genre, gameDesc, ageRating, logo, banner, trailer, sysReqs, patchNotes)
 VALUES (1, 'Elden Ring', 'FromSoftware', 'RPG', 'An open-world action RPG set in a dark fantasy realm.', '17+', 'https://i.imgur.com/eldenringlogo.png', 'https://i.imgur.com/eldenringbanner.jpg', 'https://www.youtube.com/watch?v=AKXiKBnzpBQ', 'Windows 10, 12GB RAM, GTX 1060, 60GB storage', 'Patch 1.09: PvP balancing, ray tracing support');
 

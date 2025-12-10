@@ -16,7 +16,7 @@
     <main class="login-box" role="main" aria-labelledby="signupTitle">
       <h1 id="signupTitle">Create an account</h1>
 
-      <form id="signupForm" autocomplete="on" novalidate>
+      <form id="signupForm" autocomplete="on" method="post" action="/add_user" novalidate>
         <div class="form-group">
           <label for="username">Username</label>
           <input id="username" name="username" type="text" required minlength="3" placeholder="yourname" />
@@ -38,7 +38,7 @@
         </div>
 
         <div class="actions">
-          <button type="submit">Create account</button>
+          <button type="submit" value="signup">Create account</button>
         </div>
 
         <p class="muted">
@@ -94,10 +94,7 @@
           alert('Passwords do not match.');
           return;
         }
-        // TODO: send POST to your server API (example below)
-        // fetch('/api/signup', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username: f.username.value, email: f.email.value, password: pw }) })
-        //   .then(r => r.json()).then(console.log).catch(console.error);
-        alert('Ready to submit — implement server signup API and replace this alert.');
+        f.submit();
       });
 
       if ('serviceWorker' in navigator) {
