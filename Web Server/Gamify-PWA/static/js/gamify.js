@@ -80,3 +80,18 @@ if (signupForm) {
         });
     });
 }
+
+document.querySelectorAll('.game-card').forEach(card => {
+  card.addEventListener('click', () => {
+    const banner = card.dataset.banner;
+    const link = card.dataset.link;
+
+    const overlay = document.getElementById('page-transition');
+    overlay.style.backgroundImage = `url(${banner})`;
+    overlay.classList.add('active');
+
+    setTimeout(() => {
+      window.location.href = link;
+    }, 600);
+  });
+});

@@ -64,7 +64,6 @@ _schema_path = os.path.join(basedir, 'static', 'db', 'schema.sql')
 init_db_from_schema(_db_path, _schema_path)
 
 def search_games(q, limit=100):
-    """Search games by gameName, genre, gameDev, gameDesc. Return all game info."""
     if not q:
         return []
     q = q.strip()
@@ -77,7 +76,7 @@ def search_games(q, limit=100):
         conn.row_factory = sqlite3.Row
         cur = conn.cursor()
 
-        # Search in gameName, genre, gameDev, gameDesc (prioritize gameName first)
+        # Search in gameName, genre, gameDev, gameDesc (prioritise gameName first)
         sql = """
             SELECT gameID, gameName, gameDev, genre, gameDesc, ageRating, logo, banner, trailer, patchNotes, sysReqs
             FROM games
@@ -207,12 +206,59 @@ def service_worker():
 def index():
     return render_template('index.html')
 
+def get_games_by_genre(limit_per_genre=10):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT gameID, gameName, genre, banner FROM games ORDER BY genre, gameName")
+    
+    rows = cursor.fetchall()
+    connection.close()
+
+    categories = {}
+
+    for row in rows:
+        genre = row["genre"]
+        if genre not in categories:
+            categories[genre] = []
+        if len(categories[genre]) < limit_per_genre:
+            categories[genre].append(dict(row))
+
+    return categories
+
 @app.route('/home')
 def home():
     q = request.args.get('q', '').strip()
-    games = search_games(q) if q else []
-    print(f"[HOME SEARCH] q={q!r} -> {len(games)} results")
-    return render_template('home.html', query=q, games=games)
+    if q:
+        games = search_games(q)
+        return render_template(
+            'home.html',
+            query=q,
+            games=games
+        )
+
+    categories = get_games_by_genre()
+
+    return render_template(
+        'home.html',
+        query='',
+        categories=categories
+    )
+    
+@app.route('/game/<int:game_id>')
+@login_required
+def game_detail(game_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    game = cur.execute("SELECT gameName, gameDev, genre, gameDesc, ageRating, banner, trailer, patchNotes, sysReqs FROM games WHERE gameID = ?", (game_id,)).fetchone()
+
+    conn.close()
+
+    if not game:
+        return "Game not found", 404
+
+    return render_template('game_detail.html', game=dict(game))
 
 @app.route('/login')
 def login():
