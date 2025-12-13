@@ -16,7 +16,7 @@
     <main class="login-box" role="main" aria-labelledby="loginTitle">
       <h1 id="loginTitle">Sign In to Gamify</h1>
 
-      <form id="loginForm" autocomplete="on" action="/login_validation" method="post" novalidate>
+      <form id="loginForm" autocomplete="on" method="post" novalidate>
         <div class="form-group">
           <label for="username">Username</label>
           <input id="username" name="username" type="text" required minlength="3" placeholder="yourname" />
@@ -38,6 +38,7 @@
 
         <p class="muted">Don't have an account? <a href="{{ url_for('signup') }}">Sign up</a></p>
       </form>
+
     </main>
 
     <script>
@@ -88,5 +89,6 @@
         navigator.serviceWorker.register('/sw.js').catch(()=>{});
       }
     </script>
+    <script src="{{ url_for('static', filename='js/gamify.js') }}"></script>
   </body>
 </html>

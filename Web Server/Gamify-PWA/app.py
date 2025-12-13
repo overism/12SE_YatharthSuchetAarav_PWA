@@ -1,7 +1,10 @@
 import os
 import sqlite3
 import traceback
-from flask import Flask, flash, render_template, request, jsonify, send_from_directory, redirect
+import time
+from functools import wraps
+from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect
+from werkzeug.security import generate_password_hash, check_password_hash
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -11,6 +14,14 @@ app = Flask(
     static_folder=os.path.join(basedir, 'static')
 )
 app.secret_key = os.urandom(24)
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('logged_in'):
+            return redirect('/login')
+        return f(*args, **kwargs)
+    return decorated_function
 
 def init_db_from_schema(db_path, schema_path):
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
@@ -126,17 +137,30 @@ def debug_db():
 @app.route('/login_validation', methods=['POST'])
 def login_validation():
     email = request.form.get('email')
-    username = request.form.get('username')
     password = request.form.get('password')
     
     connection = sqlite3.connect(os.path.join(basedir, 'gamify.db'))
     cursor = connection.cursor()
+
+    user = cursor.execute("SELECT userID, userName, userPassword FROM users WHERE userEmail=?", (email,)).fetchone()
     
-    user = cursor.execute("SELECT * FROM users WHERE userEmail=? AND userPassword=?", (email, password)).fetchall()
-    if len(user) > 0:
-        return redirect('/home')
+    connection.close()
+    
+    if user and check_password_hash(user[2], password):
+        session['user_id'] = user[0]
+        session['user_name'] = user[1]
+        session['user_email'] = email
+        session['logged_in'] = True
+        
+        return jsonify({
+            "success": True,
+            "message": "Login successful!"
+        }), 200
     else:
-        return redirect('/login')
+        return jsonify({
+            "success": False,
+            "message": "Invalid credentials!"
+        }), 401
 
 @app.route('/add_user', methods=['POST'])
 def add_user():
@@ -146,19 +170,28 @@ def add_user():
     
     connection = sqlite3.connect(os.path.join(basedir, 'gamify.db'))
     cursor = connection.cursor()
-    
-    ans = cursor.execute("SELECT * FROM users WHERE userEmail=? AND userPassword=?", (email, password)).fetchall()
-    
-    if len(ans) > 0:
-        connection.close()
-        flash("User already exists! Please login.")
-    else:
-        cursor.execute("INSERT INTO users (userEmail, userName, userPassword) VALUES (?, ?, ?)", (email, username, password))
-        connection.commit()
-        connection.close()
-        flash("Signup successful! Please login.")
 
-    return render_template('/login.html')
+    existing = cursor.execute("SELECT 1 FROM users WHERE userEmail=?", (email,)).fetchone()
+
+    if existing:
+        connection.close()
+        return jsonify({
+            "success": False,
+            "title": "Account Exists",
+            "message": "An account with this email already exists. Please login instead."
+        }), 409
+    
+    hashed_password = generate_password_hash(password)
+    
+    cursor.execute("INSERT INTO users (userEmail, userName, userPassword) VALUES (?, ?, ?)", (email, username, hashed_password))
+    connection.commit()
+    connection.close()
+    
+    return jsonify({
+        "success": True,
+        "title": "Signup Successful",
+        "message": "Your account has been created successfully. Please login."
+    }), 201
 
 # Serve manifest & service worker from project root
 @app.route('/manifest.json')
@@ -185,13 +218,23 @@ def home():
 def login():
     return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/login')
+
 @app.route('/signup')
 def signup():
     return render_template('signup.html')
 
 @app.route('/profile')
+@login_required
 def profile():
-    return render_template('profile.html')
+    return render_template(
+        'profile.html',
+        username = session.get('user_name'),
+        email = session.get('user_email')
+    )
 
 @app.route('/api/games', methods=['GET'])
 def get_games():

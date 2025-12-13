@@ -83,23 +83,11 @@
         window.addEventListener('blur', reset);
       })();
 
-      // client-side validation: check validity and password match
-      document.getElementById('signupForm').addEventListener('submit', function(e){
-        e.preventDefault();
-        const f = e.target;
-        if (!f.checkValidity()) { f.reportValidity(); return; }
-        const pw = document.getElementById('password').value;
-        const cpw = document.getElementById('confirmPassword').value;
-        if (pw !== cpw) {
-          alert('Passwords do not match.');
-          return;
-        }
-        f.submit();
-      });
-
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js').catch(()=>{});
       }
     </script>
+
+    <script src="{{ url_for('static', filename='js/gamify.js') }}"></script>
   </body>
 </html>
