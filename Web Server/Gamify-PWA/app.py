@@ -5,6 +5,7 @@ import datetime
 from functools import wraps
 from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -367,11 +368,105 @@ def signup():
 @app.route('/profile')
 @login_required
 def profile():
-    return render_template(
-        'profile.html',
-        username = session.get('user_name'),
-        email = session.get('user_email')
-    )
+    user_id = session.get('user_id')
+    connection = get_db_connection()
+    user = connection.execute('SELECT userName, userEmail, userBio, userPfp, userSettings FROM users WHERE userID = ?', (user_id,)).fetchone()
+    connection.close()
+    
+    if user:
+        return render_template('profile.html', user=user)
+    else:
+        return redirect(url_for('login'))
+    
+UPLOAD_FOLDER = 'static/uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload-avatar', methods=['POST'])
+@login_required
+def upload_avatar():
+    user_id = session.get('user_id')
+    file = request.files.get('avatar')
+
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        # Update avatar in the database
+        connection = get_db_connection()
+        connection.execute('UPDATE users SET userPfp = ? WHERE userID = ?', (filepath, user_id))
+        connection.commit()
+        connection.close()
+
+        return redirect(url_for('profile'))
+    
+    return 'Invalid file type', 400
+
+@app.route('/save-bio', methods=['POST'])
+@login_required
+def save_bio():
+    user_id = session.get('user_id')
+    bio = request.json.get('bio')
+    
+    connection = get_db_connection()
+    connection.execute('UPDATE users SET userBio = ? WHERE userID = ?', (bio, user_id))
+    connection.commit()
+    connection.close()
+    
+    return jsonify({'status': 'success'}), 200
+
+@app.route('/update-profile', methods=['POST'])
+@login_required
+def update_profile():
+    user_id = session.get('user_id')
+    username = request.form.get('username')
+    email = request.form.get('email')
+
+    connection = get_db_connection()
+    connection.execute('UPDATE users SET userName = ?, userEmail = ? WHERE userID = ?', (username, email, user_id))
+    connection.commit()
+    connection.close()
+
+    session['user_name'] = username
+    session['user_email'] = email
+    
+    return redirect(url_for('profile'))
+
+@app.route('/add_to_library/<int:game_id>', methods=['POST'])
+@login_required
+def add_to_library(game_id):
+    user_id = session.get('user_id')
+
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    existing_game = cursor.execute("SELECT * FROM user_library WHERE userID = ? AND gameID = ?", (user_id, game_id)).fetchone()
+
+    if existing_game:
+        connection.close()
+        return redirect(url_for('library'))
+    
+    # Insert the game into the user library
+    cursor.execute("INSERT INTO user_library (userID, gameID) VALUES (?, ?)", (user_id, game_id))
+    connection.commit()
+    connection.close()
+
+    return redirect(url_for('library'))
+
+@app.route('/library')
+@login_required
+def library():
+    user_id = session.get('user_id')
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    games = cursor.execute("SELECT g.gameID, g.gameName, g.banner FROM games g JOIN user_library ul ON g.gameID = ul.gameID WHERE ul.userID = ?", (user_id,)).fetchall()
+
+    connection.close()
+
+    return render_template('library.html', games=[dict(g) for g in games])
 
 @app.route('/api/games', methods=['GET'])
 def get_games():

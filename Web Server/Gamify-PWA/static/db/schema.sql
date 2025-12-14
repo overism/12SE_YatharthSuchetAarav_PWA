@@ -37,6 +37,14 @@ CREATE TABLE users (
     userSettings TEXT
 );
 
+CREATE TABLE user_library (
+    userID INTEGER NOT NULL,
+    gameID INTEGER NOT NULL,
+    FOREIGN KEY (userID) REFERENCES users(userID),
+    FOREIGN KEY (gameID) REFERENCES games(gameID),
+    PRIMARY KEY (userID, gameID)
+);
+
 INSERT INTO games (gameID, gameName, gameDev, genre, gameDesc, ageRating, logo, banner, trailer, sysReqs, patchNotes)
 VALUES (1, 'Elden Ring', 'FromSoftware', 'RPG', 'An open-world action RPG set in a dark fantasy realm.', '17+', 'https://i.imgur.com/eldenringlogo.png', 'https://i.imgur.com/eldenringbanner.jpg', 'https://www.youtube.com/watch?v=AKXiKBnzpBQ', 'Windows 10, 12GB RAM, GTX 1060, 60GB storage', 'Patch 1.09: PvP balancing, ray tracing support');
 

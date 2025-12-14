@@ -12,23 +12,28 @@
     <title>{{ game.gameName }} - Reviews</title>
 </head>
 <body>
-  <header class="site-header">
-    <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
+    <header class="site-header">
+        <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
 
-    <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
-      <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
-      <button type="submit">Search</button>
-    </form>
+        <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
+            <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
+            <button type="submit">Search</button>
+        </form>
+        <button class="menu-toggle" style="margin-left: 35%;" onclick="menuToggle()">
+            <img src="{{ url_for('static', filename='images/white-menu-icon-12.jpg') }}" alt="Menu" width="50px">
+        </button>
+        <div class="menu">
+            <h2 style="display: none; color: #fff; text-align: left; margin: 20px" class="menu-title">Menu</h2>
+            <nav class="side-nav">
+                <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
+                <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
+                <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+                <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+            </nav>
+        </div>
+    </header>
 
-    <nav class="main-nav">
-      <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
-      <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
-      <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
-      <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
-    </nav>
-  </header>
-
-  <main class="site-main">
+    <main class="site-main">
         {% if not query %}
             {% if session.logged_in %}
                 <section class="new-review" style="width: 50%; margin: 20px auto; max-width: 600px;">
@@ -119,7 +124,23 @@
     <footer class="site-footer">
         <small>© Gamify — Games catalogue demo</small>
     </footer>
-
+    <script>
+        function menuToggle() {
+            const menu = document.querySelector('.menu');
+            const menutoggle = document.querySelector('.menu-toggle');
+            const menutitle = document.querySelector('.menu-title');
+            // Toggle between showing and hiding the side nav
+            if (menu.style.display == "none") {
+            menu.style.display = "inline-block";
+            menutitle.style.display = "block";
+            menutoggle.style.zIndex = "1001";
+            } else {
+            menu.style.display = "none";
+            menutitle.style.display = "none";
+            menutoggle.style.zIndex = "2";
+            }
+        }
+    </script>
     <script src="{{ url_for('static', filename='js/gamify.js') }}"></script>
 </body>
 </html>

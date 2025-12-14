@@ -16,16 +16,21 @@
             <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
 
             <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
-            <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
-            <button type="submit">Search</button>
+                <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
+                <button type="submit">Search</button>
             </form>
-
-            <nav class="main-nav">
-            <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
-            <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
-            <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
-            <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
-            </nav>
+            <button class="menu-toggle" style="margin-left: 35%;" onclick="menuToggle()">
+                <img src="{{ url_for('static', filename='images/white-menu-icon-12.jpg') }}" alt="Menu" width="50px">
+            </button>
+            <div class="menu">
+                <h2 style="display: none; color: #fff; text-align: left; margin: 20px" class="menu-title">Menu</h2>
+                <nav class="side-nav">
+                    <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
+                    <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
+                    <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+                    <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+                </nav>
+            </div>
         </header>
 
         <header class="game-hero">
@@ -34,6 +39,11 @@
         </header>
 
         <main class="game-content hidden">
+            <form class="libraryForm" action="{{ url_for('add_to_library', game_id=game.gameID) }}" style="display: inline;" method="POST">
+                <button type="submit" style="position: absolute; top: 0px; right: 30px; background: transparent; border: none; cursor: pointer; z-index: 1000;">
+                    <img src="{{ url_for('static', filename='images/bookmark-ribbon--v2.png') }}" alt="Add to Library" style="width: 70px; height: 70px;">
+                </button>
+            </form>
             <div class="game-title">
                     <img style="width: 30%; display: block; margin: auto;" src="{{ game.logo }}" alt="{{ game.gameName }}">
                     <p style="margin: 20px 0px 20px 0px; text-align: center; font-family: 'Sekuya', sans-serif;">{{ game.genre }} • {{ game.gameDev }}</p>
@@ -86,7 +96,23 @@
                 }
             });
         </script>
-
+        <script>
+            function menuToggle() {
+                const menu = document.querySelector('.menu');
+                const menutoggle = document.querySelector('.menu-toggle');
+                const menutitle = document.querySelector('.menu-title');
+                // Toggle between showing and hiding the side nav
+                if (menu.style.display == "none") {
+                menu.style.display = "inline-block";
+                menutitle.style.display = "block";
+                menutoggle.style.zIndex = "1001";
+                } else {
+                menu.style.display = "none";
+                menutitle.style.display = "none";
+                menutoggle.style.zIndex = "2";
+                }
+            }
+        </script>
 
         <footer class="site-footer">
             <small>© Gamify — Games catalogue demo</small>

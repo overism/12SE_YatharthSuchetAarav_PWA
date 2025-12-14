@@ -86,12 +86,66 @@ document.querySelectorAll('.game-card').forEach(card => {
     const banner = card.dataset.banner;
     const link = card.dataset.link;
     const overlay = document.getElementById('overlay');
-    
+
     overlay.style.backgroundImage = `url(${banner})`;
     overlay.classList.add('active');
 
     setTimeout(() => {
       window.location.href = link;
     }, 600);
+  });
+});
+
+document.getElementById('saveBio').addEventListener('click', (e) => {
+  e.preventDefault();
+  saveBio();
+});
+
+async function saveBio() {
+  const bio = document.getElementById('bioEditor').value;
+  const bioStatus = document.getElementById('bioStatus');
+  bioStatus.textContent = 'Saving...';
+
+  try {
+    const response = await fetch('/save-bio', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bio: bio })
+    });
+
+    if (response.ok) {
+      bioStatus.textContent = 'Saved';
+      setTimeout(() => bioStatus.textContent = '', 2000);
+    } else {
+      bioStatus.textContent = 'Error saving bio';
+    }
+  } catch (error) {
+    bioStatus.textContent = 'Error saving bio';
+  }
+}
+
+document.getElementById('resetBio').addEventListener('click', (e) => {
+  e.preventDefault();
+  document.getElementById('bioEditor').value = '{{ user.userBio }}';
+  document.getElementById('bioStatus').textContent = 'Reset';
+  setTimeout(() => document.getElementById('bioStatus').textContent = '', 1400);
+});
+
+// Handle Avatar Upload
+document.getElementById('avatarForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const formData = new FormData(e.target);
+  fetch('/upload-avatar', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      // Update avatar image after successful upload
+      const avatar = document.getElementById('profileAvatar');
+      avatar.src = data.filepath;  // New file path returned by backend
+    }
   });
 });
