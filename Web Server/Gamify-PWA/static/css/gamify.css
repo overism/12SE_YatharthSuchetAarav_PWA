@@ -156,8 +156,14 @@
   opacity: 0.9;
   bottom: 30px;
   left: 10px;
-  color: #fff;
+    color: #fff;
   z-index: 2;
+}
+
+/* Ensure genre/developer line inside .game-title is white */
+.game-title p {
+    color: #fff !important;
+    margin-top: 12px;
 }
 
 @keyframes heroExpand {
@@ -371,4 +377,42 @@
 
 .btn-secondary:hover {
     background: rgba(255, 255, 255, 0.2);
+}
+
+/* Center and enlarge detail sections (Trailer, System Requirements, Patch Notes) */
+.detail-centered {
+    text-align: center;
+    margin: 36px auto;
+    max-width: 1000px;
+}
+.detail-centered h2 {
+    font-size: 30px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+.detail-centered p,
+.detail-centered pre {
+    font-size: 18px;
+    text-align: center;
+    color: rgba(255,255,255,0.95);
+    white-space: pre-wrap;
+    margin: 0 auto;
+}
+.detail-centered .media-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.detail-centered iframe {
+    width: 80%;
+    max-width: 1000px;
+    height: 480px;
+    border: none;
+    border-radius: 8px;
+}
+
+@media (max-width: 800px) {
+    .detail-centered h2 { font-size: 24px; }
+    .detail-centered p, .detail-centered pre { font-size: 16px; }
+    .detail-centered iframe { width: 100%; height: 300px; }
 }

@@ -67,19 +67,21 @@
                 <p>{{ game.gameDesc }}</p>
             </section>
             {% if game.trailer %}
-            <section>
+            <section class="detail-centered">
                 <h2>Trailer</h2>
-                <iframe src="{{ game.trailer }}" allowfullscreen></iframe>
+                <div class="media-wrapper">
+                    <iframe src="{{ game.trailer }}" allowfullscreen></iframe>
+                </div>
             </section>
             {% endif %}
             {% if game.sysReqs %}
-            <section>
+            <section class="detail-centered">
                 <h2>System Requirements</h2>
                 <pre>{{ game.sysReqs }}</pre>
             </section>
             {% endif %}
             {% if game.patchNotes %}
-            <section>
+            <section class="detail-centered">
                 <h2>Latest Patch Notes</h2>
                 <p>{{ game.patchNotes }}</p>
             </section>

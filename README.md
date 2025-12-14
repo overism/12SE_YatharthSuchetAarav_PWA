@@ -1,12 +1,4 @@
 # 12SE_YatharthSuchetAarav_PWA
-PWA Movie Catalogue
-
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install Flask
-cd "Web Server/Gamify-PWA"
-python app.py
-
 ## Running the Web Server (Windows PowerShell)
 
 Prerequisites: Python 3.8+

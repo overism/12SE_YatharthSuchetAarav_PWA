@@ -12,6 +12,15 @@
     <title>Gamify — Homepage</title>
 </head>
 <div id="overlay" class="page-transition"></div>
+<Style>
+  body {
+    background: #1a1a1a;
+  }
+
+  .category-title{
+    color: #ffffff;
+  }
+</Style>
 <body>
   <header class="site-header">
     <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
@@ -68,10 +77,10 @@
             {% for game in games %}
               {% set g = game %}
               <section class="search-result" style="max-width: 1200px; margin: 40px auto; padding:20px;">
-                <h2 style="color:#0b0b0b; margin-bottom:24px;">Results for "{{ query }}"</h2>
+                <h2 style="color:#d8d8d8; margin-bottom:24px;">Results for "{{ query }}"</h2>
                 <article class="game-card" data-banner="{{ g.banner }}" data-link="{{ url_for('game_detail', game_id=g.gameID) }}" style="min-width: 1000px; border-radius:20px;">
                   <img src="{{ g.banner }}" alt="{{ g.gameName }}" style="width: 100%; height: 420px; object-fit: cover; display: block;">
-                  <div style="padding: 30px; background: rgba(0,0,0,0.4);">
+                  <div style="padding: 30px; background: rgba(246, 246, 246, 0.4);">
                     <h3 style="margin: -10px 0 8px -10px; color: #fff; font-size: 24px;">{{ g.gameName }}</h3>
                     <p style="margin: 0 0 8px 0; color: rgba(255,255,255,0.8);"><strong>{{ g.genre }}</strong> • {{ g.gameDev }}</p>
                     <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9);line-height:1.5;">{{ g.gameDesc }}</p>
@@ -82,8 +91,8 @@
             {% endfor %}
           {% else %}
             <section style="max-width: 1200px; margin: 60px auto; padding: 20px; text-align: center;">
-              <h2 style="color: #0b0b0b; margin-bottom: 12px;">No search results found</h2>
-              <p style="color: rgba(15, 15, 15, 0.7); font-size: 16px;">No games match "{{ query }}". Try searching by title, genre, or developer.</p>
+              <h2 style="color: #e8e8e8; margin-bottom: 12px;">No search results found</h2>
+              <p style="color: rgba(244, 244, 244, 0.7); font-size: 16px;">No games match "{{ query }}". Try searching by title, genre, or developer.</p>
             </section>
           {% endif %}
         {% endif %}
