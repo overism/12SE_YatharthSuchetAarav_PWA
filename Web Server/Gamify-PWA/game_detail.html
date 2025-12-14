@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Sometype+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Sekuya&display=swap" rel="stylesheet">
         <link rel="manifest" href="{{ url_for('manifest') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
@@ -35,9 +35,23 @@
 
         <main class="game-content hidden">
             <div class="game-title">
-                    <h1>{{ game.gameName }}</h1>
-                    <p>{{ game.genre }} • {{ game.gameDev }}</p>
-                </div>
+                    <img style="width: 30%; display: block; margin: auto;" src="{{ game.logo }}" alt="{{ game.gameName }}">
+                    <p style="margin: 20px 0px 20px 0px; text-align: center; font-family: 'Sekuya', sans-serif;">{{ game.genre }} • {{ game.gameDev }}</p>
+            </div>
+            <a href="{{ url_for('game_reviews', game_id=game.gameID) }}"><button class="review-button">Review</button></a>
+            <div class="game-rating" style="width: 50%; margin: auto; text-align: center; padding-bottom: 24px; margin-top: 50px;">
+                {% if rating.reviewCount > 0 %}
+                    <p>
+                        ⭐ {{ rating.avgRating }}/10
+                        ({{ rating.reviewCount }} reviews)
+                    </p>
+                    <a href="{{ url_for('game_reviews', game_id=game.gameID) }}" style="text-decoration: none; color: var(--accent); font-weight: 700;">
+                        View reviews
+                    </a>
+                {% else %}
+                    <p>No reviews yet</p>
+                {% endif %}
+            </div>
             <section>
                 <h2>About the Game</h2>
                 <p>{{ game.gameDesc }}</p>

@@ -17,8 +17,12 @@ DROP TABLE IF EXISTS reviews;
 CREATE TABLE reviews (
     revID INTEGER PRIMARY KEY AUTOINCREMENT,
     gameID INTEGER NOT NULL,
+    userID TEXT NOT NULL,
+    revTitle TEXT NOT NULL,
+    revDate DATE DEFAULT DEFAULT DEFAULT (strftime('%Y-%m-%d %H:%M', 'now', 'localtime')),
     revDescription TEXT NOT NULL,
     revRating INTEGER NOT NULL,
+    FOREIGN KEY (userID) REFERENCES users (userID),
     FOREIGN KEY (gameID) REFERENCES games (gameID)
 );
 

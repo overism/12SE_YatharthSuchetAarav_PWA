@@ -85,8 +85,8 @@ document.querySelectorAll('.game-card').forEach(card => {
   card.addEventListener('click', () => {
     const banner = card.dataset.banner;
     const link = card.dataset.link;
-
-    const overlay = document.getElementById('page-transition');
+    const overlay = document.getElementById('overlay');
+    
     overlay.style.backgroundImage = `url(${banner})`;
     overlay.classList.add('active');
 

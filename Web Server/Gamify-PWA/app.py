@@ -1,9 +1,9 @@
 import os
 import sqlite3
 import traceback
-import time
+import datetime
 from functools import wraps
-from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect
+from flask import Flask, render_template, request, jsonify, send_from_directory, session, redirect, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -23,17 +23,24 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+@app.template_filter('format_datetime')
+def format_datetime(value):
+    try:
+        return datetime.strptime(value, "%Y-%m-%d %H:%M").strftime("%d-%m-%Y %H:%M")
+    except Exception:
+        return value
+
 def init_db_from_schema(db_path, schema_path):
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
     need_schema = not os.path.exists(db_path)
     if not need_schema:
         try:
-            conn = sqlite3.connect(db_path)
-            cur = conn.cursor()
-            cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='games'")
-            if cur.fetchone() is None:
+            connection = sqlite3.connect(db_path)
+            cursor = connection.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='games'")
+            if cursor.fetchone() is None:
                 need_schema = True
-            conn.close()
+            connection.close()
         except Exception:
             need_schema = True
 
@@ -70,11 +77,11 @@ def search_games(q, limit=100):
     pattern = f"%{q.lower()}%"
     db_path = os.path.join(basedir, 'gamify.db')
     results = []
-    conn = None
+    connection = None
     try:
-        conn = sqlite3.connect(db_path)
-        conn.row_factory = sqlite3.Row
-        cur = conn.cursor()
+        connection = sqlite3.connect(db_path)
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
 
         # Search in gameName, genre, gameDev, gameDesc (prioritise gameName first)
         sql = """
@@ -88,8 +95,8 @@ def search_games(q, limit=100):
         """
         params = [pattern, pattern, pattern, pattern, limit]
         print(f"[DEBUG] search_games SQL: {sql[:80]}... params={params[:3]}...")
-        cur.execute(sql, params)
-        rows = cur.fetchall()
+        cursor.execute(sql, params)
+        rows = cursor.fetchall()
         for r in rows:
             results.append({k: r[k] for k in r.keys()})
         print(f"[DEBUG] search_games: found {len(results)} rows for q={q!r}")
@@ -100,8 +107,8 @@ def search_games(q, limit=100):
         traceback.print_exc()
         return []
     finally:
-        if conn:
-            conn.close()
+        if connection:
+            connection.close()
 
 def debug_db():
     db_path = os.path.join(basedir, 'gamify.db')
@@ -111,23 +118,23 @@ def debug_db():
         try:
             st = os.stat(db_path)
             print(f"[DB DEBUG] size = {st.st_size} bytes")
-            conn = sqlite3.connect(db_path)
-            conn.row_factory = sqlite3.Row
-            cur = conn.cursor()
-            cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
-            tables = [r[0] for r in cur.fetchall()]
+            connection = sqlite3.connect(db_path)
+            connection.row_factory = sqlite3.Row
+            cursor = connection.cursor()
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+            tables = [r[0] for r in cursor.fetchall()]
             print(f"[DB DEBUG] tables = {tables}")
             if 'games' in tables:
-                cur.execute("PRAGMA table_info(games)")
-                cols = [r['name'] for r in cur.fetchall()]
+                cursor.execute("PRAGMA table_info(games)")
+                cols = [r['name'] for r in cursor.fetchall()]
                 print(f"[DB DEBUG] games columns = {cols}")
                 try:
-                    cur.execute("SELECT COUNT(*) as cnt FROM games")
-                    cnt = cur.fetchone()['cnt']
+                    cursor.execute("SELECT COUNT(*) as cnt FROM games")
+                    cnt = cursor.fetchone()['cnt']
                     print(f"[DB DEBUG] games row count = {cnt}")
                 except Exception as e:
                     print("[DB DEBUG] could not count rows:", e)
-            conn.close()
+            connection.close()
         except Exception as e:
             print("[DB DEBUG] error inspecting DB:", e)
             traceback.print_exc()
@@ -248,17 +255,101 @@ def home():
 @app.route('/game/<int:game_id>')
 @login_required
 def game_detail(game_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
+    connection = get_db_connection()
+    cursor = connection.cursor()
 
-    game = cur.execute("SELECT gameName, gameDev, genre, gameDesc, ageRating, banner, trailer, patchNotes, sysReqs FROM games WHERE gameID = ?", (game_id,)).fetchone()
+    game = cursor.execute("SELECT gameID, gameName, gameDev, genre, gameDesc, ageRating, logo, banner, trailer, patchNotes, sysReqs FROM games WHERE gameID = ?", (game_id,)).fetchone()
 
-    conn.close()
-
+    rating = cursor.execute("SELECT COUNT(*) as reviewCount, ROUND(AVG(revRating), 1) as avgRating FROM reviews WHERE gameID = ?", (game_id,)).fetchone()
+    
+    connection.close()
+    
     if not game:
         return "Game not found", 404
 
-    return render_template('game_detail.html', game=dict(game))
+    return render_template('game_detail.html', game=dict(game), rating=dict(rating))
+
+@app.route('/game/<int:game_id>/reviews')
+@login_required
+def game_reviews(game_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    game = cursor.execute("SELECT gameID, gameName FROM games WHERE gameID = ?", (game_id,)).fetchone()
+    if not game:
+        connection.close()
+        return "Game not found", 404
+    reviews = cursor.execute("SELECT r.revID, r.userID, r.revTitle, u.userName, r.revDate, r.revDescription, r.revRating FROM reviews r JOIN users u ON r.userID = u.userID WHERE r.gameID = ? ORDER BY r. revDate DESC", (game_id,)).fetchall()
+
+    connection.close()
+    return render_template('game_reviews.html', reviews=[dict(r) for r in reviews], game=dict(game), current_user_id=session.get('user_id'))
+
+@app.route('/submit_review/<int:game_id>', methods=['POST'])
+@login_required
+def submit_review(game_id):
+    title = request.form.get('revTitle')
+    rating = request.form.get('revRating')
+    description = request.form.get('revDescription')
+
+    if not all([title, rating, description]):
+        return "Invalid review data", 400
+    
+    connection = get_db_connection()
+    cursor = connection.cursor()
+    
+    user_id = session.get('user_id')
+
+    cursor.execute("INSERT INTO reviews (gameID, userID, revTitle, revRating, revDescription) VALUES (?, ?, ?, ?, ?)", (game_id, user_id, title, rating, description))
+    connection.commit()
+    connection.close()
+
+    return redirect(url_for('game_reviews', game_id=game_id))
+
+@app.route('/review/<int:rev_id>/edit', methods=['GET', 'POST'])
+@login_required
+def edit_review(rev_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    review = cursor.execute("SELECT revID, gameID, userID, revTitle, revRating, revDescription FROM reviews WHERE revID = ?", (rev_id,)).fetchone()
+    game = cursor.execute("SELECT gameID, gameName FROM games WHERE gameID = ?", (review['gameID'],)).fetchone()
+    
+    if not review or review['userID'] != session['user_id']:
+        connection.close()
+        return "Forbidden", 403
+
+    if request.method == 'POST':
+        title = request.form['revTitle']
+        rating = request.form['revRating']
+        desc = request.form['revDescription']
+
+        cursor.execute("UPDATE reviews SET revTitle = ?, revRating = ?, revDescription = ? WHERE revID = ?", (title, rating, desc, rev_id))
+
+        connection.commit()
+        connection.close()
+
+        return redirect(url_for('game_reviews', game_id=review['gameID']))
+
+    connection.close()
+    return render_template('edit_review.html', review=dict(review), game=dict(game))
+
+@app.route('/review/delete/<int:rev_id>', methods=['POST'])
+@login_required
+def delete_review(rev_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    review = cursor.execute("SELECT userID, gameID FROM reviews WHERE revID = ?",(rev_id,)).fetchone()
+
+    if not review or review['userID'] != session['user_id']:
+        connection.close()
+        return "Forbidden", 403
+
+    cursor.execute("DELETE FROM reviews WHERE revID = ?", (rev_id,))
+    connection.commit()
+    connection.close()
+
+    return redirect(url_for('game_reviews', game_id=review['gameID']))
 
 @app.route('/login')
 def login():
@@ -297,11 +388,11 @@ def get_games():
 @app.route('/api/debug/games')
 def debug_games():
     try:
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM games LIMIT 10")
-        rows = [dict(r) for r in cur.fetchall()]
-        conn.close()
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM games LIMIT 10")
+        rows = [dict(r) for r in cursor.fetchall()]
+        connection.close()
         return jsonify({
             'sample_count': len(rows),
             'sample_games': rows,
@@ -315,9 +406,9 @@ def api_schema():
     """Return the actual games table schema."""
     try:
         conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("PRAGMA table_info(games)")
-        cols = [{'name': r['name'], 'type': r['type']} for r in cur.fetchall()]
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA table_info(games)")
+        cols = [{'name': r['name'], 'type': r['type']} for r in cursor.fetchall()]
         conn.close()
         return jsonify({'columns': cols})
     except Exception as e:

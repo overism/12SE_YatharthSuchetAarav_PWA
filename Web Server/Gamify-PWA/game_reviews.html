@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Sometype+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="{{ url_for('manifest') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
+    <title>{{ game.gameName }} - Reviews</title>
+</head>
+<body>
+  <header class="site-header">
+    <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
+
+    <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
+      <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
+      <button type="submit">Search</button>
+    </form>
+
+    <nav class="main-nav">
+      <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
+      <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
+      <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+      <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+    </nav>
+  </header>
+
+  <main class="site-main">
+        {% if not query %}
+            {% if session.logged_in %}
+                <section class="new-review" style="width: 50%; margin: 20px auto; max-width: 600px;">
+                    <h2 style="color: #0b0b0b; margin-bottom: 24px; max-width: 600px;">Write a Review for {{ game.gameName }}</h2>
+                    <form action="{{ url_for('submit_review', game_id=game.gameID) }}" method="post" style="max-width: 600px; margin-bottom: 40px;">
+                        <label for="revTitle" style="color:#0b0b0b">Review Title:</label><br>
+                        <input type="text" id="revTitle" name="revTitle" required style="width: 100%; padding: 8px; margin-bottom: 12px;"><br><br>
+
+                        <label for="revRating" style="color:#0b0b0b">Rating (1-10):</label><br>
+                        <select id="revRating" name="revRating" required>
+                            {% for i in range(1, 11) %}
+                                <option value="{{ i }}">
+                                    {{ i }}
+                                </option>
+                            {% endfor %}
+                        </select><br><br>
+
+                        <label for="revDescription" style="color:#0b0b0b">Review Description:</label><br>
+                        <textarea id="revDescription" name="revDescription" rows="5" required style="width: 100%; padding: 8px; margin-bottom: 12px; resize: none;"></textarea><br><br>
+
+                        <button type="submit">Submit Review</button>
+                    </form>
+                </section>
+            {% else %}
+                <p>You must be logged in to submit a review.</p>
+            {% endif %}
+
+            <section style="max-width: 800px; margin: 40px auto; padding:20px;">
+                <h2 style="color: #0b0b0b; margin-bottom: 24px;">Reviews for {{ game.gameName }}</h2>
+                {% if reviews and reviews|length > 0 %}
+                {% for review in reviews %}
+                    <article class="review-card" style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 20px; width: 100%; position: relative;">
+                        <h3 style="margin-top: 0; color: #444;">{{ review.revTitle }}</h3>
+                        <p style="margin: 8px 0; color: #555;">Rating: {{ review.revRating }} / 10</p>
+                        <p style="margin: 8px 0; color: #777; font-size: 14px;">Reviewed by <strong>{{ review.userName }}</strong> on {{ review.revDate | format_datetime }}</p>
+                        <p style="margin-top: 12px; line-height: 1.5; color:#666">{{ review.revDescription }}</p>
+
+                        {% if review.userID == current_user_id %}
+                            <div class="review-actions">
+                                <a href="{{ url_for('edit_review', rev_id=review.revID) }}" class="review-edit">
+                                    Edit
+                                </a>
+                                <form action="{{ url_for('delete_review', rev_id=review.revID) }}"
+                                    method="post"
+                                    onsubmit="return confirm('Delete this review?');">
+                                    <button type="submit" class="review-delete">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </article>
+                {% endfor %}
+                {% else %}
+                <p style="color: #555;">No reviews yet. Be the first to review {{ game.gameName }}!</p>
+                {% endif %}
+            </section>
+
+        {% endif %}
+
+        <!-- Show search results when query is active -->
+        {% if query %}
+          {% if games and games|length > 0 %}
+            {% for game in games %}
+              {% set g = game %}
+              <section class="search-result" style="max-width: 1200px; margin: 40px auto; padding:20px;">
+                <h2 style="color:#0b0b0b; margin-bottom:24px;">Results for "{{ query }}"</h2>
+                <article class="game-card" data-banner="{{ g.banner }}" data-link="{{ url_for('game_detail', game_id=g.gameID) }}" style="min-width: 1000px; border-radius:20px;">
+                  <img src="{{ g.banner }}" alt="{{ g.gameName }}" style="width: 100%; height: 420px; object-fit: cover; display: block;">
+                  <div style="padding: 30px; background: rgba(0,0,0,0.4);">
+                    <h3 style="margin: -10px 0 8px -10px; color: #fff; font-size: 24px;">{{ g.gameName }}</h3>
+                    <p style="margin: 0 0 8px 0; color: rgba(255,255,255,0.8);"><strong>{{ g.genre }}</strong> • {{ g.gameDev }}</p>
+                    <p style="margin: 0 0 12px 0; color: rgba(255,255,255,0.9);line-height:1.5;">{{ g.gameDesc }}</p>
+                    <p style="margin: 0; color: rgba(255,255,255,0.6); font-size:13px;">Age Rating: {{ g.ageRating }}</p>
+                  </div>
+                </article>
+              </section>
+            {% endfor %}
+          {% else %}
+            <section style="max-width: 1200px; margin: 60px auto; padding: 20px; text-align: center;">
+              <h2 style="color: #0b0b0b; margin-bottom: 12px;">No search results found</h2>
+              <p style="color: rgba(15, 15, 15, 0.7); font-size: 16px;">No games match "{{ query }}". Try searching by title, genre, or developer.</p>
+            </section>
+          {% endif %}
+        {% endif %}
+    </main>
+
+    <footer class="site-footer">
+        <small>© Gamify — Games catalogue demo</small>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/gamify.js') }}"></script>
+</body>
+</html>
