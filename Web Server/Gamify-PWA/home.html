@@ -14,7 +14,7 @@
 <div id="overlay" class="page-transition"></div>
 <Style>
   body {
-    background: #1a1a1a;
+    background-color: rgb(34, 34, 34);
   }
 
   .category-title{
@@ -26,7 +26,7 @@
     <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
 
     <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
-      <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
+      <input type="search" name="q" value="{{ query|default('') }}" placeholder="Discover your new favourite game..." aria-label="Search games">
       <button type="submit">Search</button>
     </form>
     <button class="menu-toggle" style="margin-left: 35%;" onclick="menuToggle()">

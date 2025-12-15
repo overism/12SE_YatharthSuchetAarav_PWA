@@ -96,10 +96,13 @@ document.querySelectorAll('.game-card').forEach(card => {
   });
 });
 
-document.getElementById('saveBio').addEventListener('click', (e) => {
-  e.preventDefault();
-  saveBio();
-});
+const saveBioBtn = document.getElementById('saveBio');
+if (saveBioBtn) {
+  saveBioBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    saveBio();
+  });
+}
 
 async function saveBio() {
   const bio = document.getElementById('bioEditor').value;
@@ -124,28 +127,102 @@ async function saveBio() {
   }
 }
 
-document.getElementById('resetBio').addEventListener('click', (e) => {
-  e.preventDefault();
-  document.getElementById('bioEditor').value = '{{ user.userBio }}';
-  document.getElementById('bioStatus').textContent = 'Reset';
-  setTimeout(() => document.getElementById('bioStatus').textContent = '', 1400);
-});
+const resetBioBtn = document.getElementById('resetBio');
+if (resetBioBtn) {
+  resetBioBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    const bioEditor = document.getElementById('bioEditor');
+    const bioStatus = document.getElementById('bioStatus');
+    if (bioEditor) bioEditor.value = '{{ user.userBio }}';
+    if (bioStatus) {
+      bioStatus.textContent = 'Reset';
+      setTimeout(() => bioStatus.textContent = '', 1400);
+    }
+  });
+}
 
 // Handle Avatar Upload
-document.getElementById('avatarForm').addEventListener('submit', (e) => {
-  e.preventDefault();
+const avatarForm = document.getElementById('avatarForm');
+if (avatarForm) {
+  avatarForm.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-  const formData = new FormData(e.target);
-  fetch('/upload-avatar', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success') {
-      // Update avatar image after successful upload
-      const avatar = document.getElementById('profileAvatar');
-      avatar.src = data.filepath;  // New file path returned by backend
-    }
+    const formData = new FormData(e.target);
+    fetch('/upload-avatar', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 'success') {
+        const avatar = document.getElementById('profileAvatar');
+        if (avatar) avatar.src = data.filepath;
+      }
+    });
+  });
+}
+
+// Lightweight carousel behavior for .carousel containers
+document.addEventListener('DOMContentLoaded', () => {
+  const carousels = document.querySelectorAll('.carousel');
+  carousels.forEach(carousel => {
+    const gap = parseInt(getComputedStyle(carousel).getPropertyValue('gap')) || 14;
+    const cards = carousel.querySelectorAll('.game-card');
+    if (!cards || cards.length === 0) return;
+
+    // Create controls
+    const prev = document.createElement('button');
+    const next = document.createElement('button');
+    prev.className = 'carousel-prev';
+    next.className = 'carousel-next';
+    prev.innerText = '<';
+    next.innerText = '>';
+    prev.setAttribute('aria-label', 'Previous');
+    next.setAttribute('aria-label', 'Next');
+
+    // Buttons use CSS classes now (.carousel-prev / .carousel-next)
+
+    // Ensure carousel container has relative positioning for absolute controls
+    carousel.style.position = 'relative';
+    carousel.appendChild(prev);
+    carousel.appendChild(next);
+
+    const cardWidth = cards[0].getBoundingClientRect().width;
+    const scrollAmount = Math.round(cardWidth + gap);
+
+    prev.addEventListener('click', () => {
+      carousel.scrollBy({left: -scrollAmount, behavior: 'smooth'});
+    });
+    next.addEventListener('click', () => {
+      carousel.scrollBy({left: scrollAmount, behavior: 'smooth'});
+    });
+
+    // Auto-scroll
+    let autoScrollInterval = null;
+    const startAuto = () => {
+      if (autoScrollInterval) return;
+      autoScrollInterval = setInterval(() => {
+        // If near the end, jump back to start smoothly
+        if (carousel.scrollLeft + carousel.clientWidth + 8 >= carousel.scrollWidth) {
+          carousel.scrollTo({left: 0, behavior: 'smooth'});
+        } else {
+          carousel.scrollBy({left: scrollAmount, behavior: 'smooth'});
+        }
+      }, 3000);
+    };
+    const stopAuto = () => {
+      if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; }
+    };
+
+    carousel.addEventListener('mouseenter', stopAuto);
+    carousel.addEventListener('mouseleave', startAuto);
+    // Pause when interacting with controls
+    prev.addEventListener('mouseenter', stopAuto);
+    next.addEventListener('mouseenter', stopAuto);
+    prev.addEventListener('mouseleave', startAuto);
+    next.addEventListener('mouseleave', startAuto);
+
+    // Start auto-scrolling
+    startAuto();
   });
 });
