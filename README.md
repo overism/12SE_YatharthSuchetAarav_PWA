@@ -30,4 +30,5 @@ Notes:
 - The app will auto-initialize the SQLite database from `Web Server/Gamify-PWA/static/db/schema.sql` if the database is missing.
 - The server runs on port 5000 by default; open `http://127.0.0.1:5000/`.
 - Stop the server with `Ctrl+C`.
+- Also note, this server cannot be hosted on github pages as it is run with flask, please follow the instructions above to run the web server.
 
