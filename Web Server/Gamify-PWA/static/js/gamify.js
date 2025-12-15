@@ -162,71 +162,6 @@ if (avatarForm) {
   });
 }
 
-// Lightweight carousel behavior for .carousel containers
-document.addEventListener('DOMContentLoaded', () => {
-  const carousels = document.querySelectorAll('.carousel');
-  carousels.forEach(carousel => {
-    const gap = parseInt(getComputedStyle(carousel).getPropertyValue('gap')) || 14;
-    const cards = carousel.querySelectorAll('.game-card');
-    if (!cards || cards.length === 0) return;
-
-    // Create controls
-    const prev = document.createElement('button');
-    const next = document.createElement('button');
-    prev.className = 'carousel-prev';
-    next.className = 'carousel-next';
-    prev.innerText = '<';
-    next.innerText = '>';
-    prev.setAttribute('aria-label', 'Previous');
-    next.setAttribute('aria-label', 'Next');
-
-    // Buttons use CSS classes now (.carousel-prev / .carousel-next)
-
-    // Ensure carousel container has relative positioning for absolute controls
-    carousel.style.position = 'relative';
-    carousel.appendChild(prev);
-    carousel.appendChild(next);
-
-    const cardWidth = cards[0].getBoundingClientRect().width;
-    const scrollAmount = Math.round(cardWidth + gap);
-
-    prev.addEventListener('click', () => {
-      carousel.scrollBy({left: -scrollAmount, behavior: 'smooth'});
-    });
-    next.addEventListener('click', () => {
-      carousel.scrollBy({left: scrollAmount, behavior: 'smooth'});
-    });
-
-    // Auto-scroll
-    let autoScrollInterval = null;
-    const startAuto = () => {
-      if (autoScrollInterval) return;
-      autoScrollInterval = setInterval(() => {
-        // If near the end, jump back to start smoothly
-        if (carousel.scrollLeft + carousel.clientWidth + 8 >= carousel.scrollWidth) {
-          carousel.scrollTo({left: 0, behavior: 'smooth'});
-        } else {
-          carousel.scrollBy({left: scrollAmount, behavior: 'smooth'});
-        }
-      }, 3000);
-    };
-    const stopAuto = () => {
-      if (autoScrollInterval) { clearInterval(autoScrollInterval); autoScrollInterval = null; }
-    };
-
-    carousel.addEventListener('mouseenter', stopAuto);
-    carousel.addEventListener('mouseleave', startAuto);
-    // Pause when interacting with controls
-    prev.addEventListener('mouseenter', stopAuto);
-    next.addEventListener('mouseenter', stopAuto);
-    prev.addEventListener('mouseleave', startAuto);
-    next.addEventListener('mouseleave', startAuto);
-
-    // Start auto-scrolling
-    startAuto();
-  });
-});
-
 const searchForm = document.getElementById('searchForm');
 const searchSlot = document.querySelector('.search-slot');
 const menuSearch = document.querySelector('.menu-search');
@@ -245,3 +180,23 @@ function moveSearch() {
 
 window.addEventListener('resize', moveSearch);
 window.addEventListener('load', moveSearch);
+
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  const installBtn = document.createElement('button');
+  installBtn.textContent = 'Install Gamify';
+  installBtn.className = 'install-btn';
+
+  document.body.appendChild(installBtn);
+
+  installBtn.addEventListener('click', async () => {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.remove();
+  });
+});

@@ -468,6 +468,15 @@ def library():
 
     return render_template('library.html', games=[dict(g) for g in games])
 
+@app.route('/offline.html')
+def offline():
+    return render_template('offline.html')
+
+@app.after_request
+def add_pwa_headers(response):
+    response.headers['Service-Worker-Allowed'] = '/'
+    return response
+
 @app.route('/api/games', methods=['GET'])
 def get_games():
     try:

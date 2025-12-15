@@ -111,9 +111,9 @@
 
 
     <main class="center" role="main">
-      <form class="header-search" role="search" action="{{ url_for('signup') }}" method="get">
-      <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
-      <button type="submit">Search</button>
+    <form class="header-search" style="width: 600px" role="search" action="{{ url_for('signup') }}" method="get">
+        <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
+        <button type="submit">Search</button>
     </form>
 
 

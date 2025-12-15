@@ -23,7 +23,6 @@
 <body>
   <header class="site-header">
     <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
-<<<<<<< HEAD
     <div class="search-slot">
       <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
         <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
@@ -31,20 +30,11 @@
       </form>
     </div>
     <button class="menu-toggle" onclick="menuToggle()">
-=======
-
-    <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
-      <input type="search" name="q" value="{{ query|default('') }}" placeholder="Discover your new favourite game..." aria-label="Search games">
-      <button type="submit">Search</button>
-    </form>
-    <button class="menu-toggle" style="margin-left: 35%;" onclick="menuToggle()">
->>>>>>> 9264c958868a49e9b5134eecfa010158e31bb913
       <img src="{{ url_for('static', filename='images/white-menu-icon-12.jpg') }}" alt="Menu" width="50px">
     </button>
     <div class="menu">
       <h2 style="color: #fff; text-align: left; margin: 20px" class="menu-title">Menu</h2>
       <nav class="side-nav">
-        <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
         <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
         <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
         <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
