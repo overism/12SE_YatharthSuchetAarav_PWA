@@ -1,17 +1,14 @@
 const CACHE_NAME = 'gamify-v1';
 const OFFLINE_PAGE = '/offline.html';
-const BASE = '/12SE_YatharthSuchetAarav_PWA';
 
 const STATIC_ASSETS = [
-  `${BASE}/`,
-  `${BASE}/index.html`,
-  `${BASE}/login.html`,
-  `${BASE}/profile.html`,
-  `${BASE}/offline.html`,
-  `${BASE}/manifest.json`,
-  `${BASE}/sw.js`,
-  `${BASE}/static/css/login.css`,
-  `${BASE}/static/images/GAMIFY_LOGO.png`
+  '/',
+  '/offline.html',
+  '/static/css/gamify.css',
+  '/static/css/login.css',
+  '/static/css/profilestyle.css',
+  '/static/js/gamify.js',
+  '/static/images/GAMIFY_LOGO.png'
 ];
 
 self.addEventListener('install', event => {
