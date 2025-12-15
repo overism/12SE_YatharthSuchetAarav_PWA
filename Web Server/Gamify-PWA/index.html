@@ -7,9 +7,23 @@
     <link rel="manifest" href="{{ url_for('manifest') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}" />
     <link rel="icon" href="{{ url_for('static', filename='images/GAMIFY LOGO.png') }}">
+        <header class="topbar" role="banner">
+      <div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo"></div>
+      <nav class="nav" role="navigation" aria-label="Auth pages">
+        <a class="btn btn-primary" href="{{ url_for('home') }}" aria-label="Home">Home</a>
+        <a class="btn btn-ghost" href="{{ url_for('login') }}" aria-label="Sign in">Sign In</a>
+        <a class="btn btn-primary" href="{{ url_for('signup') }}" aria-label="Create account">Sign Up</a>
+        <a class="btn btn-profile" href="{{ url_for('profile') }}" aria-label="User profile">Profile</a>
+      </nav>
+    </header>
     <style>
       :root{ --bg:#0f0f11; --bar:#1f1f23; --accent:#0cf808; --muted:#cfeed1; }
-      html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial;background:var(--bg); color:#fff;}
+      html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial; color:#fff;
+        background-color: var(--bg);
+        background-image: url("{{ url_for('static', filename='images/bg1.jpg') }}");
+        background-size: cover;
+
+      }
       .topbar{
         background:var(--bar);
         color:var(--muted);
@@ -65,22 +79,45 @@
       max-width: 15%;
       height: auto;
       }
+      /* Intro overlay (fade on load) */
+      .intro-overlay{
+        position:fixed;
+        inset:0;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background: linear-gradient(180deg, rgba(0,0,0,0.98), rgba(0,0,0,0.85));
+        z-index:99999;
+        opacity:1;
+        pointer-events:none;
+        transition: opacity 1400ms ease, visibility 1400ms;
+      }
+      .intro-overlay img{ width:220px; height:auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.6)); transform-origin:center; }
+      .intro-overlay.intro-fade-out{ opacity:0; visibility:hidden; }
+      @keyframes logoPop { 0%{ transform: scale(.92); opacity:0 } 60%{ transform: scale(1.06); opacity:1 } 100%{ transform: scale(1); opacity:1 } }
+      .intro-overlay img{ animation: logoPop 1400ms cubic-bezier(.2,.9,.3,1); }
+      @media (prefers-reduced-motion: reduce){ .intro-overlay img{ animation:none } }
+
+      @media (max-width:520px){
+        .intro-overlay img{ width:120px; }
+      }
     </style>
   </head>
   <body>
-    <header class="topbar" role="banner">
-      <div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo"></div>
-      <nav class="nav" role="navigation" aria-label="Auth pages">
-        <a class="btn btn-primary" href="{{ url_for('home') }}" aria-label="Home">Home</a>
-        <a class="btn btn-ghost" href="{{ url_for('login') }}" aria-label="Sign in">Sign In</a>
-        <a class="btn btn-primary" href="{{ url_for('signup') }}" aria-label="Create account">Sign Up</a>
-        <a class="btn btn-profile" href="{{ url_for('profile') }}" aria-label="User profile">Profile</a>
-      </nav>
-    </header>
+
+    <div id="intro-overlay" class="intro-overlay" aria-hidden="true">
+      <img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="">
+    </div>
+
 
     <main class="center" role="main">
-      <h1>MoviePWA 67</h1>
-      <p style="color:rgba(255,255,255,0.72);max-width:620px;text-align:center">Open the Sign In, Sign Up or Profile links in the top bar to test the screens.</p>
+      <form class="header-search" role="search" action="{{ url_for('signup') }}" method="get">
+      <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
+      <button type="submit">Search</button>
+    </form>
+
+
+  </header>
     </main>
 
     <script>
@@ -88,5 +125,20 @@
         navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(()=>{});
       }
     </script>
+    <script>
+      // Fade out and remove the intro overlay after page load
+      document.addEventListener('DOMContentLoaded', function () {
+        const ov = document.getElementById('intro-overlay');
+        if (!ov) return;
+        // keep overlay visible briefly so the logo animation is noticeable
+        setTimeout(() => {
+          ov.classList.add('intro-fade-out');
+          ov.addEventListener('transitionend', () => {
+            if (ov && ov.parentNode) ov.parentNode.removeChild(ov);
+          }, { once: true });
+        }, 1400);
+      });
+    </script>
+
   </body>
 </html>
