@@ -11,6 +11,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
     <title>{{ game.gameName }} - Reviews</title>
 </head>
+<style>
+  body {
+    background-color: #191919;
+  }
+  </style>
 <body>
     <header class="site-header">
         <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
@@ -23,7 +28,7 @@
             <img src="{{ url_for('static', filename='images/white-menu-icon-12.jpg') }}" alt="Menu" width="50px">
         </button>
         <div class="menu">
-            <h2 style="display: none; color: #fff; text-align: left; margin: 20px" class="menu-title">Menu</h2>
+            <h2 style="display: none; color: #ffffff; text-align: left; margin: 20px" class="menu-title">Menu</h2>
             <nav class="side-nav">
                 <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
                 <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
@@ -37,12 +42,12 @@
         {% if not query %}
             {% if session.logged_in %}
                 <section class="new-review" style="width: 50%; margin: 20px auto; max-width: 600px;">
-                    <h2 style="color: #0b0b0b; margin-bottom: 24px; max-width: 600px;">Write a Review for {{ game.gameName }}</h2>
+                    <h2 style="color: #ffffff; margin-bottom: 24px; max-width: 600px;">Write a Review for {{ game.gameName }}</h2>
                     <form action="{{ url_for('submit_review', game_id=game.gameID) }}" method="post" style="max-width: 600px; margin-bottom: 40px;">
-                        <label for="revTitle" style="color:#0b0b0b">Review Title:</label><br>
+                        <label for="revTitle" style="color:#ffffff">Review Title:</label><br>
                         <input type="text" id="revTitle" name="revTitle" required style="width: 100%; padding: 8px; margin-bottom: 12px;"><br><br>
 
-                        <label for="revRating" style="color:#0b0b0b">Rating (1-10):</label><br>
+                        <label for="revRating" style="color:#ffffff">Rating (1-10):</label><br>
                         <select id="revRating" name="revRating" required>
                             {% for i in range(1, 11) %}
                                 <option value="{{ i }}">
@@ -51,7 +56,7 @@
                             {% endfor %}
                         </select><br><br>
 
-                        <label for="revDescription" style="color:#0b0b0b">Review Description:</label><br>
+                        <label for="revDescription" style="color:rgb(255, 255, 255)">Review Description:</label><br>
                         <textarea id="revDescription" name="revDescription" rows="5" required style="width: 100%; padding: 8px; margin-bottom: 12px; resize: none;"></textarea><br><br>
 
                         <button type="submit">Submit Review</button>
@@ -62,13 +67,13 @@
             {% endif %}
 
             <section style="max-width: 800px; margin: 40px auto; padding:20px;">
-                <h2 style="color: #0b0b0b; margin-bottom: 24px;">Reviews for {{ game.gameName }}</h2>
+                <h2 style="color: #ffffff; margin-bottom: 24px;">Reviews for {{ game.gameName }}</h2>
                 {% if reviews and reviews|length > 0 %}
                 {% for review in reviews %}
                     <article class="review-card" style="border: 1px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 20px; width: 100%; position: relative;">
-                        <h3 style="margin-top: 0; color: #444;">{{ review.revTitle }}</h3>
-                        <p style="margin: 8px 0; color: #555;">Rating: {{ review.revRating }} / 10</p>
-                        <p style="margin: 8px 0; color: #777; font-size: 14px;">Reviewed by <strong>{{ review.userName }}</strong> on {{ review.revDate | format_datetime }}</p>
+                        <h3 style="margin-top: 0; color: #1aff00;">{{ review.revTitle }}</h3>
+                        <p style="margin: 8px 0; color: #adadad;">Rating: {{ review.revRating }} / 10</p>
+                        <p style="margin: 8px 0; color: #eeeeee; font-size: 14px;">Reviewed by <strong>{{ review.userName }}</strong> on {{ review.revDate | format_datetime }}</p>
                         <p style="margin-top: 12px; line-height: 1.5; color:#666">{{ review.revDescription }}</p>
 
                         {% if review.userID == current_user_id %}
