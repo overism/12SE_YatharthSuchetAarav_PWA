@@ -149,3 +149,22 @@ document.getElementById('avatarForm').addEventListener('submit', (e) => {
     }
   });
 });
+
+const searchForm = document.getElementById('searchForm');
+const searchSlot = document.querySelector('.search-slot');
+const menuSearch = document.querySelector('.menu-search');
+
+function moveSearch() {
+  if (window.innerWidth <= 640) {
+    if (!menuSearch.contains(searchForm)) {
+      menuSearch.appendChild(searchForm);
+    }
+  } else {
+    if (!searchSlot.contains(searchForm)) {
+      searchSlot.appendChild(searchForm);
+    }
+  }
+}
+
+window.addEventListener('resize', moveSearch);
+window.addEventListener('load', moveSearch);

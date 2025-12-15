@@ -8,28 +8,36 @@
         <link href="https://fonts.googleapis.com/css2?family=Sekuya&display=swap" rel="stylesheet">
         <link rel="manifest" href="{{ url_for('manifest') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
-        <title>Gamify — UI Tester</title>
+        <link rel="icon" href="{{ url_for('static', filename='images/image2.png') }}">
+        <title>{{ game.gameName }} - Gamify</title>
     </head>
     <body class="game-details">
         <header class="site-header">
             <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
-
+            <div class="search-slot">
             <form class="header-search" role="search" action="{{ url_for('home') }}" method="get">
                 <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
                 <button type="submit">Search</button>
             </form>
-            <button class="menu-toggle" style="margin-left: 35%;" onclick="menuToggle()">
+            </div>
+            <button class="menu-toggle" onclick="menuToggle()">
                 <img src="{{ url_for('static', filename='images/white-menu-icon-12.jpg') }}" alt="Menu" width="50px">
             </button>
             <div class="menu">
-                <h2 style="display: none; color: #fff; text-align: left; margin: 20px" class="menu-title">Menu</h2>
+                <h2 style="color: #fff; text-align: left; margin: 20px" class="menu-title">Menu</h2>
                 <nav class="side-nav">
                     <a class="nav-link" href="{{ url_for('index') }}">Landing</a>
                     <a class="nav-link" href="{{ url_for('login') }}">Sign In</a>
                     <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
                     <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+                    <a class="nav-link" href="{{ url_for('library') }}">Library</a>
                 </nav>
+                <div class="menu-slot">
+                    <form class="header-search menu-search" role="search" action="{{ url_for('home') }}" method="get">
+                        <input type="search" name="q" value="{{ query|default('') }}" placeholder="Search games, genres, developers..." aria-label="Search games">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
             </div>
         </header>
 
@@ -41,11 +49,11 @@
         <main class="game-content hidden">
             <form class="libraryForm" action="{{ url_for('add_to_library', game_id=game.gameID) }}" style="display: inline;" method="POST">
                 <button type="submit" style="position: absolute; top: 0px; right: 30px; background: transparent; border: none; cursor: pointer; z-index: 1000;">
-                    <img src="{{ url_for('static', filename='images/bookmark-ribbon--v2.png') }}" alt="Add to Library" style="width: 70px; height: 70px;">
+                    <img src="{{ url_for('static', filename='images/bookmark-ribbon--v2.png') }}" alt="Add to Library" class="bookmark-detail">
                 </button>
             </form>
             <div class="game-title">
-                    <img style="width: 30%; display: block; margin: auto;" src="{{ game.logo }}" alt="{{ game.gameName }}">
+                    <img style="width: 400px; display: block; margin: auto;" src="{{ game.logo }}" alt="{{ game.gameName }}">
                     <p style="margin: 20px 0px 20px 0px; text-align: center; font-family: 'Sekuya', sans-serif;">{{ game.genre }} • {{ game.gameDev }}</p>
             </div>
             <a href="{{ url_for('game_reviews', game_id=game.gameID) }}"><button class="review-button">Review</button></a>
@@ -77,7 +85,7 @@
             {% if game.sysReqs %}
             <section class="detail-centered">
                 <h2>System Requirements</h2>
-                <pre>{{ game.sysReqs }}</pre>
+                <p>{{ game.sysReqs }}</p>
             </section>
             {% endif %}
             {% if game.patchNotes %}
@@ -98,21 +106,16 @@
                 }
             });
         </script>
+        
         <script>
+            const menu = document.querySelector('.menu');
+            const menutoggle = document.querySelector('.menu-toggle');
+
             function menuToggle() {
-                const menu = document.querySelector('.menu');
-                const menutoggle = document.querySelector('.menu-toggle');
-                const menutitle = document.querySelector('.menu-title');
-                // Toggle between showing and hiding the side nav
-                if (menu.style.display == "none") {
-                menu.style.display = "inline-block";
-                menutitle.style.display = "block";
-                menutoggle.style.zIndex = "1001";
-                } else {
-                menu.style.display = "none";
-                menutitle.style.display = "none";
-                menutoggle.style.zIndex = "2";
-                }
+                const isOpen = menu.classList.contains('open');
+
+                menu.classList.toggle('open', !isOpen);
+                menutoggle.style.zIndex = isOpen ? '2' : '1001';
             }
         </script>
 

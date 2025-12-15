@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Your Library - Gamify</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/header.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profilestyle.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sekuya&display=swap" rel="stylesheet">
     <link rel="manifest" href="{{ url_for('manifest') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profilestyle.css') }}">
 </head>
 <body>
     <header class="topbar" role="banner">
-        <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
+        <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" class="logoBrand"></div></a>
         <nav class="nav" role="navigation" aria-label="Auth pages">
             <a class="btn btn-ghost" href="{{ url_for('login') }}">Sign In</a>
             <a class="btn btn-ghost" href="{{ url_for('signup') }}">Sign Up</a>
@@ -25,7 +27,7 @@
             {% for game in games %}
                 <article class="game-card grid-item" style="max-width: 500px;">
                     <img src="{{ game['banner'] }}" alt="{{ game['gameName'] }}">
-                    <h3 style="display: block; margin: 5px;">{{ game['gameName'] }}</h3>
+                    <h3 style="display: block; margin: 5px; font-size: 16px;">{{ game['gameName'] }}</h3>
                     <a href="{{ url_for('game_detail', game_id=game['gameID']) }}" class="viewDetails" style="display: inline-block;">View Details</a>
                 </article>
             {% else %}
