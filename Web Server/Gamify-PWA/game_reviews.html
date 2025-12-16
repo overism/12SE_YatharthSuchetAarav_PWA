@@ -90,7 +90,17 @@
                         <p style="margin: 8px 0; color: #eeeeee; font-size: 14px;">Reviewed by <strong>{{ review.userName }}</strong> on {{ review.revDate | format_datetime }}</p>
                         <p style="margin-top: 12px; line-height: 1.5; color:#666">{{ review.revDescription }}</p>
 
-                        {% if review.userID == current_user_id %}
+                        {% if current_user_id == 1 %}
+                            <div class="review-actions">
+                                <form action="{{ url_for('delete_review', rev_id=review.revID) }}"
+                                    method="post"
+                                    onsubmit="return confirm('Delete this review?');">
+                                    <button type="submit" class="review-delete">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        {% elif review.userID == current_user_id %}
                             <div class="review-actions">
                                 <a href="{{ url_for('edit_review', rev_id=review.revID) }}" class="review-edit">
                                     Edit

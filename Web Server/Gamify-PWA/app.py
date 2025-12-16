@@ -342,7 +342,7 @@ def delete_review(rev_id):
 
     review = cursor.execute("SELECT userID, gameID FROM reviews WHERE revID = ?",(rev_id,)).fetchone()
 
-    if not review or review['userID'] != session['user_id']:
+    if review['userID'] != session['user_id'] and session.get('user_id') != 1:
         connection.close()
         return "Forbidden", 403
 
