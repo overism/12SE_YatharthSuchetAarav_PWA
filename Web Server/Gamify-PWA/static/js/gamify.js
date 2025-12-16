@@ -1,3 +1,13 @@
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/static/sw.js')
+    .then(function(registration) {
+      console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(function(error) {
+      console.error('Service Worker registration failed:', error);
+    });
+}
+
 function showPopup(title, message, onClose = null) {
     const popup = document.createElement("div");
     popup.className = "popup";
@@ -180,23 +190,3 @@ function moveSearch() {
 
 window.addEventListener('resize', moveSearch);
 window.addEventListener('load', moveSearch);
-
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-
-  const installBtn = document.createElement('button');
-  installBtn.textContent = 'Install Gamify';
-  installBtn.className = 'install-btn';
-
-  document.body.appendChild(installBtn);
-
-  installBtn.addEventListener('click', async () => {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installBtn.remove();
-  });
-});

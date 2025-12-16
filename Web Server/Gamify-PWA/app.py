@@ -203,11 +203,11 @@ def add_user():
 # Serve manifest & service worker from project root
 @app.route('/manifest.json')
 def manifest():
-    return send_from_directory(basedir, 'manifest.json')
+    return send_from_directory('static', 'manifest.json', mimetype='application/manifest+json')
 
 @app.route('/sw.js')
 def service_worker():
-    return send_from_directory(basedir, 'sw.js')
+    return send_from_directory('static', 'sw.js')
 
 # Pages
 @app.route('/')

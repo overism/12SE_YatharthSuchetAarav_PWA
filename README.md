@@ -31,4 +31,5 @@ Notes:
 - The server runs on port 5000 by default; open `http://127.0.0.1:5000/`.
 - Stop the server with `Ctrl+C`.
 - Also note, this server cannot be hosted on github pages as it is run with flask, please follow the instructions above to run the web server.
+- It is recommended that you experiment with the progressive app scaling that has been added in accordance to the installable Progressive Web Application.
 

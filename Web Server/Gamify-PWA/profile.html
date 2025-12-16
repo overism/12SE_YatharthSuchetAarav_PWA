@@ -4,9 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Profile - Gamify</title>
-    <link rel="manifest" href="{{ url_for('manifest') }}" />
+    <link rel="icon" href="{{ url_for('static', filename='images/image.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/profilestyle.css') }}">
   </head>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/sw.js')
+        .then(() => console.log('SW registered'))
+        .catch(err => console.error('SW failed', err));
+    }
+  </script>
   <body>
     <header class="topbar" role="banner">
       <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>

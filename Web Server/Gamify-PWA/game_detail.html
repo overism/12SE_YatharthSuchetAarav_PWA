@@ -5,12 +5,20 @@
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="icon" href="{{ url_for('static', filename='images/image.png') }}">
         <link href="https://fonts.googleapis.com/css2?family=Sekuya&display=swap" rel="stylesheet">
-        <link rel="manifest" href="{{ url_for('manifest') }}">
+        <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
         <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}">
         <link rel="icon" href="{{ url_for('static', filename='images/image2.png') }}">
         <title>{{ game.gameName }} - Gamify</title>
     </head>
+    <script>
+        if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/static/sw.js')
+            .then(() => console.log('SW registered'))
+            .catch(err => console.error('SW failed', err));
+        }
+    </script>
     <body class="game-details">
         <header class="site-header">
             <a href="{{ url_for('home') }}"><div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo" width="150px"></div></a>
@@ -52,7 +60,7 @@
                 </button>
             </form>
             <div class="game-title">
-                    <img style="width: 400px; display: block; margin: auto;" src="{{ game.logo }}" alt="{{ game.gameName }}">
+                    <img style="width: 300px; display: block; margin: auto;" src="{{ game.logo }}" alt="{{ game.gameName }}">
                     <p style="margin: 20px 0px 20px 0px; text-align: center; font-family: 'Sekuya', sans-serif;">{{ game.genre }} • {{ game.gameDev }}</p>
             </div>
             <a href="{{ url_for('game_reviews', game_id=game.gameID) }}"><button class="review-button">Review</button></a>

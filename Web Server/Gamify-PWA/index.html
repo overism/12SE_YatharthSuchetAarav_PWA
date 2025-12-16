@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gamify — Games Catalogue</title>
-    <link rel="manifest" href="{{ url_for('manifest') }}" />
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gamify.css') }}" />
-    <link rel="icon" href="{{ url_for('static', filename='images/GAMIFY LOGO.png') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/image.png') }}">
         <header class="topbar" role="banner">
       <div class="brand"><img src="{{ url_for('static', filename='images/GAMIFY_LOGO.png') }}" alt="Gamify logo"></div>
       <nav class="nav" role="navigation" aria-label="Auth pages">
@@ -103,6 +103,13 @@
       }
     </style>
   </head>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/static/sw.js')
+      .then(() => console.log('SW registered'))
+      .catch(err => console.error('SW failed', err));
+  }
+</script>
   <body>
 
     <div id="intro-overlay" class="intro-overlay" aria-hidden="true">

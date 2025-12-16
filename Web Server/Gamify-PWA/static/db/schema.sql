@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"userSettings"	TEXT,
 	PRIMARY KEY("userID" AUTOINCREMENT)
 );
+
 INSERT INTO "games" VALUES (1,'Elden Ring','FromSoftware','RPG','An open-world action RPG set in a dark fantasy realm.','17+','https://www.pngmart.com/files/23/Elden-Ring-Logo-PNG-Photo.png','https://image.api.playstation.com/vulcan/ap/rnd/202110/2000/YMUoJUYNX0xWk6eTKuZLr5Iw.jpg','https://www.youtube.com/embed/AKXiKBnzpBQ','Patch 1.09: PvP balancing, ray tracing support','Windows 10, 12GB RAM, GTX 1060, 60GB storage');
 INSERT INTO "games" VALUES (2,'Stardew Valley','ConcernedApe','Simulation','A farming simulator with RPG elements and cozy village life.','10+','https://cdn2.steamgriddb.com/logo/b1c9cafe109ae47006730f3cca062215.png','https://hisameartwork.wordpress.com/wp-content/uploads/2018/01/sdv-banner.jpg','https://www.youtube.com/embed/ot7uXNQskhs','Windows 7+, 2GB RAM, Intel HD Graphics, 500MB storage','1.6 Update: New crops, festivals, multiplayer fixes');
 INSERT INTO "games" VALUES (3,'Valorant','Riot Games','FPS','Tactical 5v5 shooter with unique agent abilities.','16+','https://www.pngmart.com/files/23/Valorant-Logo-PNG.png','https://www.riotgames.com/darkroom/1440/8d5c497da1c2eeec8cffa99b01abc64b:5329ca773963a5b739e98e715957ab39/ps-f2p-val-console-launch-16x9.jpg','https://www.youtube.com/embed/2O1bH4YJ1XU','Windows 10, 8GB RAM, GTX 1050 Ti, 30GB storage','Episode 8: New map “Drift”, agent tweaks');
@@ -71,14 +72,3 @@ INSERT INTO "games" VALUES (26,'Sea of Thieves','Rare','Adventure','Pirate-theme
 INSERT INTO "games" VALUES (27,'The Forest','Endnight Games','Horror','Survival horror in a mysterious forest.','18+','https://images.launchbox-app.com/9164ef96-0b68-4903-8050-940fef9b8d05.png','https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/242760/capsule_616x353.jpg?t=1699381053','https://www.youtube.com/embed/4qTtVMM3uqQ','Win 7+, 8GB RAM, GTX 560, 5GB storage','Sons of the Forest sequel released');
 INSERT INTO "games" VALUES (28,'Cuphead','Studio MDHR','Platformer','Run-and-gun platformer with 1930s cartoon art style.','10+','https://wallpapers.com/images/hd/cuphead-logo-graphic-vt9s8lr3m7o0tv26.jpg','https://www.nintendo.com/eu/media/images/10_share_images/games_15/nintendo_switch_download_software_1/H2x1_NSwitchDS_Cuphead.jpg','https://www.youtube.com/embed/NN-9SQXoi50','Win 7+, 3GB RAM, Intel HD Graphics, 4GB storage','Delicious Last Course DLC released');
 INSERT INTO "games" VALUES (29,'Inside','Playdead','Puzzle','Atmospheric puzzle-platformer with dark storytelling.','16+','https://www.pngkey.com/png/full/380-3800484_inside-logo-inside.png','https://img.opencritic.com/game/2848/o/Jo0HjaKf.jpg','https://www.youtube.com/embed/E1yFZgB_5kU','Win 8+, 4GB RAM, GTX 460, 3GB storage','Xbox Game Pass availability');
-INSERT INTO "reviews" VALUES (1,13,8,'This is an amazing gammememememe','2025-12-14 12:30','HAD SO MUCH FUN PLAYING THIS!!!!!',10);
-INSERT INTO "user_library" VALUES (8,14);
-INSERT INTO "user_library" VALUES (8,26);
-INSERT INTO "user_library" VALUES (8,9);
-INSERT INTO "user_library" VALUES (8,13);
-INSERT INTO "user_library" VALUES (8,3);
-INSERT INTO "user_library" VALUES (8,8);
-INSERT INTO "users" VALUES (8,'yatharthjain','yatharth.jain@education.nsw.gov.au','scrypt:32768:8:1$kFyWE1v4uXhFc2ZN$4111ede968fd9c0e35872a96f325f80e2280a363044743cdfe1548214fdeb978b5b591c170dc1611635cdd5ffcb0428573f77f23858a99fe21b7c46226e891a6','static/uploads\white-menu-icon-12.jpg','awdaweawdawdw',NULL);
-INSERT INTO "users" VALUES (9,'tester','tester@gmail.com','scrypt:32768:8:1$PatHYTcwVnXOWjmO$b18eeda45f512c0b739bda724a3647edfebac5ec9fc457a9098de12d4c3ee98c90442334156d3583598979eed464704e685727a15e6e2b0c6cfec6a8586d4d36',NULL,NULL,NULL);
-INSERT INTO "users" VALUES (10,'suchet','suchet@gmail.com','scrypt:32768:8:1$aQ34xz7D61WSvp7c$557e2c88396253286e634f0fd7c3e8070b932495c9d9898a7e04fc12d1a7b08d1fb9a1b4683696c022fe54d9109ae3013be78602c50b7e83186ff4a7893646aa',NULL,NULL,NULL);
-COMMIT;
